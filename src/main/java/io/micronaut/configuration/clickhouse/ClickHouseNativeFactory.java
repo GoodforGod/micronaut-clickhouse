@@ -13,7 +13,7 @@ import javax.inject.Singleton;
  * Default factory for creating Native ClickHouse client {@link ClickHouseConnection}.
  *
  * @author Anton Kurako (GoodforGod)
- * @since 11.3.2020
+ * @since 22.3.2020
  */
 @Requires(beans = ClickHouseNativeConfiguration.class)
 @Factory

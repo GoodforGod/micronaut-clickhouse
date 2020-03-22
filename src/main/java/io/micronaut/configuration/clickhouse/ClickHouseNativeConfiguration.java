@@ -1,10 +1,10 @@
 package io.micronaut.configuration.clickhouse;
 
 /**
- * ClickHouse native driver configuration class.
+ * ClickHouse Native Driver configuration class.
  *
  * @author Anton Kurako (GoodforGod)
- * @since 11.3.2020
+ * @since 22.3.2020
  */
-public class ClickHouseNativeConfiguration {
+public class ClickHouseNativeConfiguration extends ClickHouseAbstractConfiguration {
 }

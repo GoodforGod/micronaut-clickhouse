@@ -1,13 +1,14 @@
 package io.micronaut.configuration.clickhouse;
 
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.*;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.runtime.context.scope.Refreshable;
 import ru.yandex.clickhouse.ClickHouseConnection;
+import ru.yandex.clickhouse.ClickHouseDriver;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.sql.SQLException;
 
 /**
  * Default factory for creating Official ClickHouse client {@link ClickHouseConnection}.
@@ -24,6 +25,18 @@ public class ClickHouseFactory {
     @Singleton
     @Primary
     public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
-        return null;
+        try {
+            return new ClickHouseDriver().connect(configuration.getURL(), configuration.getProperties());
+        } catch (SQLException e) {
+            throw new ConfigurationException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Refreshable(ClickHouseSettings.PREFIX)
+    @Bean(preDestroy = "close")
+    @Prototype
+    @Named("prototype")
+    protected ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
+        return getConnection(configuration);
     }
 }

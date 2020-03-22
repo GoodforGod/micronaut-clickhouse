@@ -7,12 +7,13 @@ import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.clickhouse.ClickHouseConnection;
+import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import java.util.Properties;
 
 /**
- * ClickHouse official driver configuration class.
+ * ClickHouse Official Driver configuration class.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 11.3.2020
@@ -20,9 +21,7 @@ import java.util.Properties;
 @Requires(property = ClickHouseSettings.PREFIX)
 @Requires(classes = ClickHouseConnection.class)
 @ConfigurationProperties(ClickHouseSettings.PREFIX)
-public class ClickHouseConfiguration {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class ClickHouseConfiguration extends ClickHouseAbstractConfiguration {
 
     @ConfigurationBuilder(prefixes = "set")
     private ClickHouseProperties properties;
@@ -35,8 +34,6 @@ public class ClickHouseConfiguration {
         this.properties.setHost(ClickHouseSettings.DEFAULT_HOST);
         this.properties.setPort(ClickHouseSettings.DEFAULT_PORT);
         this.properties.setDatabase(ClickHouseSettings.DEFAULT_DATABASE);
-        logger.debug("Settings default HOST '{}', PORT '{}', DATABASE '{}' values for configuration",
-                ClickHouseSettings.DEFAULT_HOST, ClickHouseSettings.DEFAULT_PORT, ClickHouseSettings.DEFAULT_DATABASE);
     }
 
     public ClickHouseProperties getProperties() {
@@ -44,18 +41,6 @@ public class ClickHouseConfiguration {
     }
 
     public String getURL() {
-        final String host = properties.getHost();
-        final int port = properties.getPort();
-        final String database = properties.getDatabase();
-
-        if(StringUtils.isEmpty(host))
-            throw new IllegalArgumentException("ClickHouse Host is empty!");
-
-        if(StringUtils.isEmpty(database))
-            throw new IllegalArgumentException("ClickHouse Database is empty!");
-
-        final String url = "jdbc:clickhouse://" + host + ":" + port + "/" + database;
-        logger.debug("ClickHouse URL: {}", url);
-        return url;
+        return buildURL(properties.getHost(), properties.getPort(), properties.getDatabase());
     }
 }
