@@ -16,7 +16,7 @@ public interface ClickHouseSettings {
     /**
      * ClickHouse default HOST
      */
-    String DEFAULT_HOST = "localhost";
+    String DEFAULT_HOST = "127.0.0.1";
 
     /**
      * ClickHouse default PORT

@@ -19,9 +19,10 @@ import java.util.Properties;
  * @since 11.3.2020
  */
 @Requires(property = ClickHouseSettings.PREFIX)
-@Requires(classes = ClickHouseConnection.class)
 @ConfigurationProperties(ClickHouseSettings.PREFIX)
-public class ClickHouseConfiguration extends ClickHouseAbstractConfiguration {
+public class ClickHouseConfiguration {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @ConfigurationBuilder(prefixes = "set")
     private ClickHouseProperties properties;
@@ -42,5 +43,17 @@ public class ClickHouseConfiguration extends ClickHouseAbstractConfiguration {
 
     public String getURL() {
         return buildURL(properties.getHost(), properties.getPort(), properties.getDatabase());
+    }
+
+    public String buildURL(String host, int port, String database) {
+        if (StringUtils.isEmpty(host))
+            throw new IllegalArgumentException("ClickHouse Host is empty!");
+
+        if (StringUtils.isEmpty(database))
+            throw new IllegalArgumentException("ClickHouse Database is empty!");
+
+        final String url = String.format("%s//%s:%s/%s", ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX, host, port, database);
+        logger.debug("ClickHouse URL: {}", url);
+        return url;
     }
 }

@@ -20,13 +20,19 @@ import java.sql.SQLException;
 @Factory
 public class ClickHouseFactory {
 
+    private final ClickHouseDriver driver;
+
+    public ClickHouseFactory() {
+        this.driver = new ClickHouseDriver();
+    }
+
     @Refreshable(ClickHouseSettings.PREFIX)
     @Bean(preDestroy = "close")
     @Singleton
     @Primary
     public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
         try {
-            return new ClickHouseDriver().connect(configuration.getURL(), configuration.getProperties());
+            return driver.connect(configuration.getURL(), configuration.getProperties());
         } catch (SQLException e) {
             throw new ConfigurationException(e.getMessage(), e.getCause());
         }

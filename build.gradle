@@ -48,7 +48,7 @@ dependencies {
     api 'ru.yandex.clickhouse:clickhouse-jdbc:0.2.4'
     api 'com.github.housepower:clickhouse-native-jdbc:2.0-stable'
 
-    implementation 'io.micronaut:micronaut-runtime'
+    implementation 'io.micronaut:micronaut-http-client'
     implementation 'io.micronaut:micronaut-management'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'

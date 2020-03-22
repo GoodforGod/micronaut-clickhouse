@@ -1,13 +1,14 @@
 package io.micronaut.configuration.clickhouse;
 
 import com.github.housepower.jdbc.ClickHouseConnection;
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Requires;
+import com.github.housepower.jdbc.ClickHouseDriver;
+import io.micronaut.context.annotation.*;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.runtime.context.scope.Refreshable;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.sql.SQLException;
 
 /**
  * Default factory for creating Native ClickHouse client {@link ClickHouseConnection}.
@@ -15,15 +16,33 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2020
  */
-@Requires(beans = ClickHouseNativeConfiguration.class)
+@Requires(beans = ClickHouseConfiguration.class)
 @Factory
 public class ClickHouseNativeFactory {
+
+    private final ClickHouseDriver driver;
+
+    public ClickHouseNativeFactory() {
+        this.driver = new ClickHouseDriver();
+    }
 
     @Refreshable(ClickHouseSettings.PREFIX)
     @Bean(preDestroy = "close")
     @Singleton
     @Primary
-    public ClickHouseConnection getConnection(ClickHouseNativeConfiguration configuration) {
-        return null;
+    public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
+        try {
+            return (ClickHouseConnection) driver.connect(configuration.getURL(), configuration.getProperties().asProperties());
+        } catch (SQLException e) {
+            throw new ConfigurationException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Refreshable(ClickHouseSettings.PREFIX)
+    @Bean(preDestroy = "close")
+    @Prototype
+    @Named("prototype")
+    protected ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
+        return getConnection(configuration);
     }
 }
