@@ -2,8 +2,11 @@ package io.micronaut.configuration.clickhouse.health;
 
 import io.micronaut.configuration.clickhouse.ClickHouseConfiguration;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
@@ -12,6 +15,8 @@ import org.reactivestreams.Publisher;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import javax.inject.Singleton;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,19 +39,21 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
      * The name to expose details with.
      */
     private static final String NAME = "clickhouse";
-    private final String uri;
     private final HttpClient client;
     private final String database;
 
-    public ClickHouseHealthIndicator(ClickHouseConfiguration configuration, HttpClient client) {
-        this.client = client;
-        this.database = configuration.getProperties().getDatabase();
-        this.uri = buildClickHouseURI(configuration);
+    public ClickHouseHealthIndicator(ClickHouseConfiguration configuration) {
+        try {
+            this.client = RxHttpClient.create(new URL(configuration.getURL()));
+            this.database = configuration.getProperties().getDatabase();
+        } catch (MalformedURLException e) {
+            throw new ConfigurationException(e.getMessage());
+        }
     }
 
     @Override
     public Publisher<HealthResult> getResult() {
-        return Flowable.fromPublisher(client.retrieve(uri))
+        return Flowable.fromPublisher(client.retrieve("/ping"))
                 .map(this::buildUpReport)
                 .timeout(10, SECONDS)
                 .retry(3)
@@ -71,10 +78,5 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
 
     private static HealthResult.Builder getBuilder() {
         return HealthResult.builder(NAME);
-    }
-
-    private static String buildClickHouseURI(ClickHouseConfiguration configuration) {
-        final ClickHouseProperties properties = configuration.getProperties();
-        return String.format("%s:%s/ping", properties.getHost(), properties.getPort());
     }
 }

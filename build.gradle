@@ -53,8 +53,11 @@ dependencies {
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
 
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation 'org.testcontainers:junit-jupiter:1.13.0'
+    testImplementation 'org.testcontainers:clickhouse:1.13.0'
 
     testImplementation 'io.micronaut.test:micronaut-test-core'
     testImplementation 'io.micronaut.test:micronaut-test-junit5'
@@ -130,8 +133,8 @@ publishing {
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username System.getenv("OSS_USER")
-                password System.getenv("OSS_PASS")
+                username System.getenv("OSS_USERNAME")
+                password System.getenv("OSS_PASSWORD")
             }
         }
     }

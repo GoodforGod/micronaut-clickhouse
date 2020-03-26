@@ -6,7 +6,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
@@ -41,8 +40,14 @@ public class ClickHouseConfiguration {
         return properties;
     }
 
-    public String getURL() {
+    public String getJDBC() {
         return buildURL(properties.getHost(), properties.getPort(), properties.getDatabase());
+    }
+
+    public String getURL() {
+        return (properties.getSsl())
+                ? String.format("https://%s:%s", properties.getHost(), properties.getPort())
+                : String.format("http://%s:%s", properties.getHost(), properties.getPort());
     }
 
     public String buildURL(String host, int port, String database) {

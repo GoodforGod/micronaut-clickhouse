@@ -11,7 +11,8 @@ import javax.inject.Singleton;
 import java.sql.SQLException;
 
 /**
- * Default factory for creating Native ClickHouse client {@link ClickHouseConnection}.
+ * Default factory for creating Native ClickHouse client
+ * {@link ClickHouseConnection}.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2020
@@ -32,7 +33,7 @@ public class ClickHouseNativeFactory {
     @Primary
     public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
         try {
-            return (ClickHouseConnection) driver.connect(configuration.getURL(), configuration.getProperties().asProperties());
+            return (ClickHouseConnection) driver.connect(configuration.getJDBC(), configuration.getProperties().asProperties());
         } catch (SQLException e) {
             throw new ConfigurationException(e.getMessage(), e.getCause());
         }
