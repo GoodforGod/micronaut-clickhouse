@@ -3,16 +3,10 @@ package io.micronaut.configuration.clickhouse;
 import com.github.housepower.jdbc.settings.ClickHouseConfig;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.core.util.StringUtils;
 import io.micronaut.runtime.context.scope.Refreshable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import javax.inject.Singleton;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * ClickHouse Official Driver configuration class.

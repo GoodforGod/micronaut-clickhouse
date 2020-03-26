@@ -3,7 +3,6 @@ package io.micronaut.configuration.clickhouse.health;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.health.HealthStatus;
 import io.micronaut.management.health.indicator.HealthResult;
-import io.micronaut.test.annotation.MicronautTest;
 import io.reactivex.Single;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

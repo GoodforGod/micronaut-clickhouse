@@ -1,15 +1,12 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.ClickHouseConnection;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

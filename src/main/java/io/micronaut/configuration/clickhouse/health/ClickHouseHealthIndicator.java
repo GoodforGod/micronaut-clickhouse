@@ -6,13 +6,11 @@ import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RxHttpClient;
-import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
