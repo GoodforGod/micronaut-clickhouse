@@ -1,5 +1,139 @@
 # Micronaut ClickHouse Configuration
 
+![Java CI](https://github.com/GoodforGod/arangodb-testcontainer/workflows/Java%20CI/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_arangodb-testcontainer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_arangodb-testcontainer)
+
+This project includes integration between Micronaut and ClickHouse.
+
+## Dependency :rocket:
+**Gradle**
+```groovy
+dependencies {
+    compile 'com.github.goodforgod:micronaut-clickhouse:1.0.0'
+}
+```
+
+**Maven**
+```xml
+<dependency>
+    <groupId>com.github.goodforgod</groupId>
+    <artifactId>micronaut-clickhouse</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+
+## Configuration
+
+Includes a configuration to automatically configure official [ClickHouse Java drive](https://github.com/ClickHouse/clickhouse-jdbc)
+or [ClickHouse Native Driver](https://github.com/housepower/ClickHouse-Native-JDBC). 
+Just configure the host, port, credentials (if needed) of the ClickHouse driver in *application.yml*.
+
+```yaml
+clickhouse:
+  host: localhost       # default
+  port: 8529            # default
+  database: default     # default
+```
+
+To use [official driver](https://github.com/ClickHouse/clickhouse-jdbc) just add a dependency to your application.
+
+```groovy
+compile 'ru.yandex.clickhouse:clickhouse-jdbc:0.2.4'
+```
+
+To use [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) just add a dependency to your application.
+
+```groovy
+compile 'com.github.housepower:clickhouse-native-jdbc:2.0-stable'
+```
+
+### Drivers
+
+Both *ClickHouse Official* and *ClickHouse Native* connections are then available for dependency injection.
+
+Connections are injected as [**singletons**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) remember that while using them.
+
+```java
+@Inject
+private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
+
+@Inject
+private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
+```
+
+In case you want to use connections as **[prototypes](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
+you can specify named *prototype* annotation.
+
+```java
+@Named("prototype")
+@Inject
+private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
+
+@Named("prototype")
+@Inject
+private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
+```
+
+### Configuring ClickHouse Driver
+
+All accessors and clients are provided as [**refreshable**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) with *ClickHouse* key for bean refresh.
+
+Configuration supports all available ClickHouse driver settings.
+
+Check [ClickHouse official](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java) info about each parameter.
+```yaml
+clickhouse:
+  async: true                           # default - false
+```
+
+#### Database Initialization
+
+There is an option to initialize database if it doesn't exist on startup via *createDatabaseIfNotExist* option.
+
+Usage:
+
+```yaml
+clickhouse:
+  createDatabaseIfNotExist: true        # default - false
+```
+
+### Health Check
+
+Health check for ClickHouse is provided and is *turned on* by default.
+
+Micronaut health check is part of [Micronaut Health Endpoint](https://docs.micronaut.io/latest/guide/index.html#healthEndpoint).
+
+Example of ClickHouse health:
+
+```json
+{
+  "name": "service",
+  "status": "UP",
+  "details": {
+    "clickhouse": {
+      "name": "clickhouse",
+      "status": "UP",
+      "details": {
+        "database": "default"
+      }
+    }
+  }
+}
+```
+
+Where database *version* is specified and *database* name service is connected to as per [configuration](#Configuration).
+
+You can explicitly *turn off* health check.
+
+```yaml
+clickhouse:
+  health:
+    enabled: false      # default - true 
+```
+
 
 ## Testing
 
@@ -10,7 +144,7 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
 
-**1.0.0** - Initial version, official and [native]() drivers support, database initialization, health check, cluster health check.
+**1.0.0** - Initial version, official and [native]() drivers support, database initialization, health check.
 
 ## License
 
