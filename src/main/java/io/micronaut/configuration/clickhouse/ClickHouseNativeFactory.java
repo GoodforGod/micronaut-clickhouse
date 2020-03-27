@@ -9,6 +9,7 @@ import io.micronaut.runtime.context.scope.Refreshable;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Default factory for creating Native ClickHouse client
@@ -27,16 +28,20 @@ public class ClickHouseNativeFactory {
         this.driver = new ClickHouseDriver();
     }
 
+    public ClickHouseConnection getConnection(String jdbcUrl, Properties properties) {
+        try {
+            return (ClickHouseConnection) driver.connect(jdbcUrl, properties);
+        } catch (SQLException e) {
+            throw new ConfigurationException(e.getMessage(), e.getCause());
+        }
+    }
+
     @Refreshable(ClickHouseSettings.PREFIX)
     @Bean(preDestroy = "close")
     @Singleton
     @Primary
     public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
-        try {
-            return (ClickHouseConnection) driver.connect(configuration.getJDBC(), configuration.getProperties().asProperties());
-        } catch (SQLException e) {
-            throw new ConfigurationException(e.getMessage(), e.getCause());
-        }
+        return getConnection(configuration.getJDBC(), configuration.getProperties().asProperties());
     }
 
     @Refreshable(ClickHouseSettings.PREFIX)
