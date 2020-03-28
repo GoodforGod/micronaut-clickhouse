@@ -26,6 +26,8 @@ public class ClickHouseConfiguration {
     @ConfigurationBuilder(prefixes = "set")
     private ClickHouseProperties properties;
 
+    private boolean createDatabaseIfNotExist = false;
+
     /**
      * new props to init default values
      */
@@ -34,6 +36,30 @@ public class ClickHouseConfiguration {
         this.properties.setHost(ClickHouseSettings.DEFAULT_HOST);
         this.properties.setPort(ClickHouseSettings.DEFAULT_PORT);
         this.properties.setDatabase(ClickHouseSettings.DEFAULT_DATABASE);
+    }
+
+    /**
+     * Initialize new configuration with new properties
+     * 
+     * @param properties to init with
+     */
+    public ClickHouseConfiguration(ClickHouseProperties properties) {
+        this.properties = new ClickHouseProperties(properties);
+    }
+
+    /**
+     * @return whenever to create database on context initialization
+     */
+    public boolean isCreateDatabaseIfNotExist() {
+        return createDatabaseIfNotExist;
+    }
+
+    /**
+     * @param createDatabaseIfNotExist indicates to create database if not exist
+     *                                 while context initialization
+     */
+    public void setCreateDatabaseIfNotExist(boolean createDatabaseIfNotExist) {
+        this.createDatabaseIfNotExist = createDatabaseIfNotExist;
     }
 
     public ClickHouseProperties getProperties() {
