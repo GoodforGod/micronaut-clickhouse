@@ -6,6 +6,7 @@ import io.micronaut.context.exceptions.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.clickhouse.ClickHouseConnection;
+import ru.yandex.clickhouse.ClickHouseDriver;
 import ru.yandex.clickhouse.ClickHouseStatement;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
@@ -20,7 +21,6 @@ import javax.inject.Inject;
  * @since 27.3.2020
  */
 @Requires(property = "clickhouse.createDatabaseIfNotExist", value = "true", defaultValue = "false")
-@Requires(beans = ClickHouseConnection.class)
 @Context
 public class ClickHouseDatabaseInitializer {
 
@@ -28,7 +28,7 @@ public class ClickHouseDatabaseInitializer {
 
     @PostConstruct
     @Inject
-    protected void setupDatabase(ClickHouseFactory factory, ClickHouseConfiguration configuration) {
+    protected void setupDatabase(ClickHouseConfiguration configuration) {
         if (configuration.isCreateDatabaseIfNotExist()) {
             final String database = configuration.getProperties().getDatabase();
             if (ClickHouseSettings.DEFAULT_DATABASE.equals(database)) {
@@ -41,7 +41,7 @@ public class ClickHouseDatabaseInitializer {
             final ClickHouseConfiguration newConfiguration = new ClickHouseConfiguration(properties);
 
             final long setupStart = System.nanoTime();
-            try (ClickHouseConnection clickHouseConnection = factory.getConnection(newConfiguration.getJDBC(), properties)) {
+            try (ClickHouseConnection clickHouseConnection = new ClickHouseDriver().connect(newConfiguration.getJDBC(), properties)) {
                 try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
                     statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
                 }

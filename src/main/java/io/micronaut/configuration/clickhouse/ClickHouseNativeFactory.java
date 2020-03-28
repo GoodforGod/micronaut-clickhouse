@@ -19,6 +19,7 @@ import java.util.Properties;
  * @since 22.3.2020
  */
 @Requires(beans = ClickHouseConfiguration.class)
+@Requires(classes = ClickHouseConnection.class)
 @Factory
 public class ClickHouseNativeFactory {
 
