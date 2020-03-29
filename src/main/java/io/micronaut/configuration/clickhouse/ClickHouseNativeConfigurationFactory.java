@@ -1,5 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
+import com.github.housepower.jdbc.ClickHouseConnection;
 import com.github.housepower.jdbc.settings.ClickHouseConfig;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
  * @since 11.3.2020
  */
 @Requires(property = ClickHouseSettings.PREFIX)
+@Requires(classes = ClickHouseConnection.class)
 @ConfigurationProperties(ClickHouseSettings.PREFIX)
 public class ClickHouseNativeConfigurationFactory {
 

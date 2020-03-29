@@ -19,6 +19,7 @@ import java.sql.SQLException;
  * @since 11.3.2020
  */
 @Requires(beans = ClickHouseConfiguration.class)
+@Requires(classes = ClickHouseConnection.class)
 @Factory
 public class ClickHouseFactory {
 
