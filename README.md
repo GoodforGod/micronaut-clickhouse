@@ -185,7 +185,7 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
 
-**1.1.0** - Added all native driver settings for configuration, fixed native driver inject issues.
+**1.0.1** - Added all native driver settings for configuration, fixed native driver inject issues.
 
 **1.0.0** - Initial version, [official driver](https://github.com/ClickHouse/clickhouse-jdbc) and [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) drivers support, database initialization, health check.
 
