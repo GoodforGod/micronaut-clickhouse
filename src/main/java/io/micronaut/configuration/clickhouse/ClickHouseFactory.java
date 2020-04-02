@@ -19,17 +19,17 @@ import java.sql.SQLException;
  * @since 11.3.2020
  */
 @Requires(beans = ClickHouseConfiguration.class)
-@Requires(classes = ClickHouseConnection.class)
+@Requires(classes = ru.yandex.clickhouse.ClickHouseConnection.class)
 @Factory
 public class ClickHouseFactory {
 
-    private final ClickHouseDriver driver;
+    private final ru.yandex.clickhouse.ClickHouseDriver driver;
 
     public ClickHouseFactory() {
         this.driver = new ClickHouseDriver();
     }
 
-    public ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
+    public ru.yandex.clickhouse.ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
         try {
             return driver.connect(jdbcUrl, properties);
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class ClickHouseFactory {
     @Bean(preDestroy = "close")
     @Singleton
     @Primary
-    public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
+    public ru.yandex.clickhouse.ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
         return getConnection(configuration.getJDBC(), configuration.getProperties());
     }
 
@@ -49,7 +49,7 @@ public class ClickHouseFactory {
     @Bean(preDestroy = "close")
     @Prototype
     @Named("prototype")
-    protected ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
+    protected ru.yandex.clickhouse.ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
         return getConnection(configuration);
     }
 }
