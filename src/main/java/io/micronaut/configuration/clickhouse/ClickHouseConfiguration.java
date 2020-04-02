@@ -3,10 +3,6 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import java.util.Properties;
@@ -19,9 +15,7 @@ import java.util.Properties;
  */
 @Requires(property = ClickHouseSettings.PREFIX)
 @ConfigurationProperties(ClickHouseSettings.PREFIX)
-public class ClickHouseConfiguration {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     @ConfigurationBuilder(prefixes = "set")
     private ClickHouseProperties properties;
@@ -66,25 +60,17 @@ public class ClickHouseConfiguration {
         return properties;
     }
 
+    /**
+     * @return JDBC connections url for ClickHouse driver
+     */
     public String getJDBC() {
-        return buildURL(properties.getHost(), properties.getPort(), properties.getDatabase());
+        return getJDBC(properties);
     }
 
+    /**
+     * @return HTTP url for ClickHouse server
+     */
     public String getURL() {
-        return (properties.getSsl())
-                ? String.format("https://%s:%s", properties.getHost(), properties.getPort())
-                : String.format("http://%s:%s", properties.getHost(), properties.getPort());
-    }
-
-    public String buildURL(String host, int port, String database) {
-        if (StringUtils.isEmpty(host))
-            throw new IllegalArgumentException("ClickHouse Host is empty!");
-
-        if (StringUtils.isEmpty(database))
-            throw new IllegalArgumentException("ClickHouse Database is empty!");
-
-        final String url = String.format("%s//%s:%s/%s", ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX, host, port, database);
-        logger.debug("ClickHouse URL: {}", url);
-        return url;
+        return getURL(properties);
     }
 }

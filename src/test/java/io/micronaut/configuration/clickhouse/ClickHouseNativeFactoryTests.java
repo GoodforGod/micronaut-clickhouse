@@ -24,9 +24,9 @@ class ClickHouseNativeFactoryTests extends Assertions {
     private final ClickHouseContainer container = new ClickHouseContainer();
 
     @Test
-    void defaultClientConnectsToDatabase() throws Exception {
+    void nativeConnectionTestQuerySuccess() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort() - 1);
+        properties.put("clickhouse.native.port", container.getFirstMappedPort() - 1);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final com.github.housepower.jdbc.ClickHouseConnection connection = context.getBean(com.github.housepower.jdbc.ClickHouseConnection.class);
@@ -37,13 +37,14 @@ class ClickHouseNativeFactoryTests extends Assertions {
     @Test
     void getBothOfficialAndNativeConnectionBeans() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort() - 1);
+        properties.put("clickhouse.port", container.getFirstMappedPort());
+        properties.put("clickhouse.native.port", container.getFirstMappedPort() - 1);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final com.github.housepower.jdbc.ClickHouseConnection connectionNative = context.getBean(com.github.housepower.jdbc.ClickHouseConnection.class);
-//        final ru.yandex.clickhouse.ClickHouseConnection connectionOfficial = context.getBean(ru.yandex.clickhouse.ClickHouseConnection.class);
+        final ru.yandex.clickhouse.ClickHouseConnection connectionOfficial = context.getBean(ru.yandex.clickhouse.ClickHouseConnection.class);
 
-//        assertTrue(connectionOfficial.createStatement().execute(container.getTestQueryString()));
+        assertTrue(connectionOfficial.createStatement().execute(container.getTestQueryString()));
         assertTrue(connectionNative.createStatement().execute(container.getTestQueryString()));
     }
 }

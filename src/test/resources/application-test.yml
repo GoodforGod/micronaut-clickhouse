@@ -1,2 +1,4 @@
 clickhouse:
   async: false # default - false
+  native:
+    database: default # default - default

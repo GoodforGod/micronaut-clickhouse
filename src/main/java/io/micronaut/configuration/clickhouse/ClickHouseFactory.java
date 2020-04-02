@@ -18,7 +18,6 @@ import java.sql.SQLException;
  * @author Anton Kurako (GoodforGod)
  * @since 11.3.2020
  */
-@Requires(property = "clic.on", value = "true")
 @Requires(beans = ClickHouseConfiguration.class)
 @Requires(classes = ru.yandex.clickhouse.ClickHouseConnection.class)
 @Factory

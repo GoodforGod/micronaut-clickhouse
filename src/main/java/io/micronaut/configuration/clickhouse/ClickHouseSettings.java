@@ -14,6 +14,11 @@ public interface ClickHouseSettings {
     String PREFIX = "clickhouse";
 
     /**
+     * Prefix to use for Native Driver ClickHouse settings.
+     */
+    String PREFIX_NATIVE = PREFIX + ".native";
+
+    /**
      * ClickHouse default HOST
      */
     String DEFAULT_HOST = "127.0.0.1";
