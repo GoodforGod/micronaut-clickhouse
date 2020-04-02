@@ -1,13 +1,11 @@
 package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.Qualifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.yandex.clickhouse.ClickHouseConnection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +43,10 @@ class ClickHouseFactoryTests extends Assertions {
         properties.put("clickhouse.native.port", container.getFirstMappedPort() - 1);
 
         final ApplicationContext context = ApplicationContext.run(properties);
-        final com.github.housepower.jdbc.ClickHouseConnection connectionNative = context.getBean(com.github.housepower.jdbc.ClickHouseConnection.class);
-        final ru.yandex.clickhouse.ClickHouseConnection connectionOfficial = context.getBean(ru.yandex.clickhouse.ClickHouseConnection.class);
+        final com.github.housepower.jdbc.ClickHouseConnection connectionNative = context
+                .getBean(com.github.housepower.jdbc.ClickHouseConnection.class);
+        final ru.yandex.clickhouse.ClickHouseConnection connectionOfficial = context
+                .getBean(ru.yandex.clickhouse.ClickHouseConnection.class);
 
         assertTrue(connectionOfficial.createStatement().execute(container.getTestQueryString()));
         assertTrue(connectionNative.createStatement().execute(container.getTestQueryString()));

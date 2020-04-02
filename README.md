@@ -11,7 +11,7 @@ This project includes integration between Micronaut and ClickHouse.
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:1.0.0'
+    compile 'com.github.goodforgod:micronaut-clickhouse:1.0.1'
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -33,21 +33,23 @@ Just configure the host, port, credentials (if needed) of the ClickHouse driver 
 
 ```yaml
 clickhouse:
-  host: localhost       # default
-  port: 8529            # default
-  database: default     # default
+  host: 127.0.0.1       # default - 127.0.0.1
+  port: 8529            # default - 8529
+  database: default     # default - default
+  native:
+    port: 9000          # default - 9000
 ```
 
 To use [official driver](https://github.com/ClickHouse/clickhouse-jdbc) just add a dependency to your application.
 
 ```groovy
-compile 'ru.yandex.clickhouse:clickhouse-jdbc:0.2.4'
+compile 'ru.yandex.clickhouse:clickhouse-jdbc'
 ```
 
 To use [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) just add a dependency to your application.
 
 ```groovy
-compile 'com.github.housepower:clickhouse-native-jdbc:2.0-stable'
+compile 'com.github.housepower:clickhouse-native-jdbc'
 ```
 
 ### Drivers
@@ -78,14 +80,14 @@ private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
 private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
 ```
 
-### Configuring ClickHouse Driver
+### Configuring ClickHouse Official Driver
 
-All *connections* are provided as [**refreshable**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) with *ClickHouse* key for bean refresh.
+Only *official connections* are provided as [**refreshable**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) with *ClickHouse* key for bean refresh.
 
-Configuration supports all available ClickHouse driver settings.
+Official Configuration supports all available ClickHouse driver settings.
 
-Check [ClickHouse official](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java) 
-for about all parameters.
+Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java) 
+for info about all parameters.
 ```yaml
 clickhouse:
   async: true                           # default - false
@@ -93,6 +95,40 @@ clickhouse:
   maxRedirects: 5
   ...
 ```
+
+### Configuring ClickHouse Native Driver
+
+
+**Remember** that native driver uses **port different from official** driver, 
+which is default to *9000* and not *8529*.
+So your ClickHouse instance should be exposed with that port for native driver.
+
+Configuration for port and other settings for native driver are in *different section* that official one, 
+even if some of them overlap by default.
+
+Native configuration supports all native driver settings.
+
+Settings for native driver are available under *clickhouse.native* prefix as per example below.
+
+Check [ClickHouse Native settings file](https://github.com/housepower/ClickHouse-Native-JDBC/blob/master/src/main/java/com/github/housepower/jdbc/settings/SettingKey.java) 
+for info about all parameters.
+```yaml
+clickhouse:
+  native:
+    host: 127.0.0.1                   # default - 127.0.0.1 (or equal to official driver config)
+    port: 9000                        # default - 9000
+    database: default                 # default - default   (or equal to official driver config)
+  ...
+```
+
+Some settings are equivalent to [Official ClickHouse driver configuration](#Configuring ClickHouse Official Driver) by default:
+* http_receive_timeout - equal to official connectionTimeout (default)
+* http_send_timeout - equal to official connectionTimeout (default)
+* connect_timeout - equal to official connectionTimeout (default)
+* query_timeout - equal to official connectionTimeout multiplied by 1000 (default)
+* connect_timeout_with_failover_ms - equal to official connectionTimeout (default)
+* max_read_buffer_size - equal to official bufferSize (default)
+* use_client_time_zone - false (default)
 
 #### Database Initialization
 
@@ -148,6 +184,8 @@ TestContainers allows you to use integration tests with real database in all doc
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**1.1.0** - Added all native driver settings for configuration, fixed native driver inject issues.
 
 **1.0.0** - Initial version, [official driver](https://github.com/ClickHouse/clickhouse-jdbc) and [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) drivers support, database initialization, health check.
 
