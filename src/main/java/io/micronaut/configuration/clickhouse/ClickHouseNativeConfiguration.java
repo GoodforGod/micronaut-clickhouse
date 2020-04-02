@@ -51,6 +51,7 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
 
         this.properties.put(SettingKey.address.name(), clickHouseProperties.getHost());
         this.properties.put(SettingKey.port.name(), ClickHouseSettings.DEFAULT_NATIVE_PORT);
+        this.properties.put(SettingKey.database.name(), clickHouseProperties.getDatabase());
 
         // in sec
         this.properties.put(SettingKey.http_receive_timeout.name(), Math.max(clickHouseProperties.getConnectionTimeout() / 1000, 30));

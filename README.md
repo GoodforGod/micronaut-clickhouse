@@ -115,9 +115,9 @@ for info about all parameters.
 ```yaml
 clickhouse:
   native:
-    host: 127.0.0.1                   # default - 127.0.0.1 (or equal to official driver config)
-    port: 9000                        # default - 9000
-    database: default                 # default - default   (or equal to official driver config)
+    address: 127.0.0.1         # default - 127.0.0.1 (or equal to official driver config)
+    port: 9000                 # default - 9000
+    database: default          # default - default   (or equal to official driver config)
   ...
 ```
 
