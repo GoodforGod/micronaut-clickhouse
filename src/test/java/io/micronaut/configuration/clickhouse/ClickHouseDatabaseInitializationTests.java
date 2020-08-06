@@ -24,7 +24,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
     @Test
     void databaseInitializedWhenContextCreated() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort());
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
         properties.put("clickhouse.database", "custom");
         properties.put("clickhouse.createDatabaseIfNotExist", true);
 
@@ -48,7 +48,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
     @Test
     void databaseDefaultInitializeSkip() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort());
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
         properties.put("clickhouse.database", ClickHouseSettings.DEFAULT_DATABASE);
         properties.put("clickhouse.createDatabaseIfNotExist", true);
 
