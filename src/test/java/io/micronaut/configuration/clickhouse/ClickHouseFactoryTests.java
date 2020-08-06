@@ -25,7 +25,7 @@ class ClickHouseFactoryTests extends Assertions {
     @Test
     void officialConnectionTestQuerySuccess() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort());
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ru.yandex.clickhouse.ClickHouseConnection connection = context.getBean(ru.yandex.clickhouse.ClickHouseConnection.class);
@@ -39,8 +39,8 @@ class ClickHouseFactoryTests extends Assertions {
     @Test
     void getBothOfficialAndNativeConnectionBeans() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort());
-        properties.put("clickhouse.native.port", container.getFirstMappedPort() - 1);
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
+        properties.put("clickhouse.native.port", container.getMappedPort(ClickHouseContainer.NATIVE_PORT));
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final com.github.housepower.jdbc.ClickHouseConnection connectionNative = context

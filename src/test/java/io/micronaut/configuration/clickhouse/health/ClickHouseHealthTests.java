@@ -29,7 +29,7 @@ class ClickHouseHealthTests extends Assertions {
     @Test
     void checkHealthUp() {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getFirstMappedPort());
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
