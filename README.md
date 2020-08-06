@@ -121,7 +121,7 @@ clickhouse:
   ...
 ```
 
-Some settings are equivalent to [Official ClickHouse driver configuration](#Configuring ClickHouse Official Driver) by default:
+Some settings are equivalent to [Official ClickHouse driver configuration](#configuring-clickhouse-official-driver) by default:
 * http_receive_timeout - equal to official connectionTimeout (default)
 * http_send_timeout - equal to official connectionTimeout (default)
 * connect_timeout - equal to official connectionTimeout (default)
@@ -165,8 +165,7 @@ Example of ClickHouse health:
 }
 ```
 
-Where *database* name service is connected to as per [configuration](#Configuration)
-is displayed.
+Where *database* name service is connected same as [configuration says](#Configuration).
 
 You can explicitly *turn off* health check.
 
@@ -178,7 +177,7 @@ clickhouse:
 
 ## Testing
 
-For testing purposes you can use [ClickHouse TestContainer library](https://www.testcontainers.org/modules/databases/clickhouse/) 
+For testing purposes you can use [ClickHouse TestContainer library](https://www.testcontainers.org/modules/databases/clickhouse/).
 
 TestContainers allows you to use integration tests with real database in all docker friendly environments, 
 check here for [TestContainers](https://www.testcontainers.org/).
