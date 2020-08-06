@@ -11,7 +11,7 @@ This project includes integration between Micronaut and ClickHouse.
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:1.0.1'
+    compile 'com.github.goodforgod:micronaut-clickhouse:1.0.2'
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -184,6 +184,8 @@ TestContainers allows you to use integration tests with real database in all doc
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**1.0.2** - Dependencies updated.
 
 **1.0.1** - Added all native driver settings for configuration, fixed native driver inject issues.
 
