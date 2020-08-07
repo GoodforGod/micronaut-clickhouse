@@ -8,6 +8,11 @@
 This project includes integration between Micronaut and ClickHouse.
 
 ## Dependency :rocket:
+
+Starting from version *2.0.0* library ships for *Micronaut 2*.
+
+Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
+
 **Gradle**
 ```groovy
 dependencies {
