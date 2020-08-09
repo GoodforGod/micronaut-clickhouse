@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Description in progress
- *
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */

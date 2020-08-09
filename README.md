@@ -139,11 +139,18 @@ Some settings are equivalent to [Official ClickHouse driver configuration](#conf
 
 There is an option to initialize database if it doesn't exist on startup via *createDatabaseIfNotExist* option.
 
-Usage:
-
 ```yaml
 clickhouse:
   createDatabaseIfNotExist: true        # default - false
+```
+
+Default timeout for operation set to 10 seconds, if you want to specify timeout for database creation
+on startup you can set it via property.
+
+```yaml
+arangodb:
+  createDatabaseIfNotExist: true    # default - false
+    timeout: 30
 ```
 
 ### Health Check
@@ -188,6 +195,8 @@ TestContainers allows you to use integration tests with real database in all doc
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**2.0.0** - Micronaut 2 support, database init timeout property added, dependency updated.
 
 **1.0.2** - Dependencies updated.
 

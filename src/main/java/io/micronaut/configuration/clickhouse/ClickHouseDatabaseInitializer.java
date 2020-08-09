@@ -2,7 +2,9 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.annotation.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.clickhouse.ClickHouseConnection;
@@ -22,9 +24,13 @@ import javax.inject.Inject;
  */
 @Requires(property = "clickhouse.createDatabaseIfNotExist", value = "true", defaultValue = "false")
 @Context
+@Internal
 public class ClickHouseDatabaseInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Value("${arangodb.createDatabaseIfNotExist.timeout:10}")
+    private Integer createTimeout;
 
     @PostConstruct
     @Inject
@@ -38,6 +44,8 @@ public class ClickHouseDatabaseInitializer {
 
             final ClickHouseProperties properties = new ClickHouseProperties(configuration.getProperties());
             properties.setDatabase("default");
+            properties.setConnectionTimeout(createTimeout);
+            properties.setDataTransferTimeout(createTimeout);
             final ClickHouseConfiguration newConfiguration = new ClickHouseConfiguration(properties);
 
             final long setupStart = System.nanoTime();

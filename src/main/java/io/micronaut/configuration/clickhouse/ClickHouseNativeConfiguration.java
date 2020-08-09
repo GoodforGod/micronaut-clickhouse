@@ -32,7 +32,7 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
      * Native properties to set via micronaut map property builder
      */
     @MapFormat(transformation = MapFormat.MapTransformation.FLAT)
-    private Map<String, Object> properties = new HashMap<>(26);
+    private final Map<String, Object> properties = new HashMap<>(30);
 
     /**
      * Setups default non native configs for native configurations as some of them
@@ -96,11 +96,11 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
      */
     public String getJDBC() {
         final String host = getProperty(SettingKey.address)
-                .orElseThrow(() -> new IllegalArgumentException("ClickHouse Native Host is not specified!"));
+                .orElseThrow(() -> new ConfigurationException("ClickHouse Native Host is not specified!"));
         final String port = getProperty(SettingKey.port)
-                .orElseThrow(() -> new IllegalArgumentException("ClickHouse Native Port is not specified!"));
+                .orElseThrow(() -> new ConfigurationException("ClickHouse Native Port is not specified!"));
         final String database = getProperty(SettingKey.database)
-                .orElseThrow(() -> new IllegalArgumentException("ClickHouse Native Database is not specified!"));
+                .orElseThrow(() -> new ConfigurationException("ClickHouse Native Database is not specified!"));
         return getJDBC(host, Integer.parseInt(port), database);
     }
 
@@ -109,9 +109,9 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
      */
     public String getURL() {
         final String host = getProperty(SettingKey.address)
-                .orElseThrow(() -> new IllegalArgumentException("ClickHouse Native Host is not specified!"));
+                .orElseThrow(() -> new ConfigurationException("ClickHouse Native Host is not specified!"));
         final String port = getProperty(SettingKey.port)
-                .orElseThrow(() -> new IllegalArgumentException("ClickHouse Native Port is not specified!"));
+                .orElseThrow(() -> new ConfigurationException("ClickHouse Native Port is not specified!"));
         return getURL(host, Integer.parseInt(port), false);
     }
 

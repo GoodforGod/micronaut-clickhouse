@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Description in progress
- *
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */
