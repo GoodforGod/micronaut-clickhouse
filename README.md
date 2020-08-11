@@ -144,13 +144,13 @@ clickhouse:
   createDatabaseIfNotExist: true        # default - false
 ```
 
-Default timeout for operation set to 10 seconds, if you want to specify timeout for database creation
+Default timeout for operation set to 10 seconds, if you want to specify timeout *in seconds* for database creation
 on startup you can set it via property.
 
 ```yaml
 arangodb:
   createDatabaseIfNotExist: true    # default - false
-    timeout: 30
+    timeout: 30                     # time in seconds
 ```
 
 ### Health Check

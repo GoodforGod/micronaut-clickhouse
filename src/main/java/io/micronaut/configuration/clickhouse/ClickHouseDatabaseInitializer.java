@@ -23,6 +23,7 @@ import javax.inject.Inject;
  * @since 27.3.2020
  */
 @Requires(property = "clickhouse.createDatabaseIfNotExist", value = "true", defaultValue = "false")
+@Requires(beans = ClickHouseConfiguration.class)
 @Context
 @Internal
 public class ClickHouseDatabaseInitializer {
@@ -35,33 +36,33 @@ public class ClickHouseDatabaseInitializer {
     @PostConstruct
     @Inject
     protected void setupDatabase(ClickHouseConfiguration configuration) {
-        if (configuration.isCreateDatabaseIfNotExist()) {
-            final String database = configuration.getProperties().getDatabase();
-            if (ClickHouseSettings.DEFAULT_DATABASE.equals(database)) {
-                logger.debug("Database initialization is turned of for 'default' database, skipping...");
-                return;
-            }
-
-            final ClickHouseProperties properties = new ClickHouseProperties(configuration.getProperties());
-            properties.setDatabase("default");
-            properties.setConnectionTimeout(createTimeout);
-            properties.setDataTransferTimeout(createTimeout);
-            final ClickHouseConfiguration newConfiguration = new ClickHouseConfiguration(properties);
-
-            final long setupStart = System.nanoTime();
-            try (ClickHouseConnection clickHouseConnection = new ClickHouseDriver().connect(newConfiguration.getJDBC(), properties)) {
-                try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
-                    statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
-                }
-            } catch (Exception e) {
-                logger.error("Could not create '{}' database due to: {}", database, e.getMessage());
-                throw new ConfigurationException("Could not initialize database due to connection failure: " + e.getMessage());
-            }
-
-            final long tookNanoTime = System.nanoTime() - setupStart;
-            logger.info("Database '{}' initialization took '{}' millis", database, tookNanoTime / 1000000);
-        } else {
-            logger.debug("Database creation is turned off.");
+        if (!configuration.isCreateDatabaseIfNotExist()) {
+            logger.debug("ClickHouse Database creation is set to 'false'");
+            return;
         }
+
+        final String database = configuration.getProperties().getDatabase();
+        if (ClickHouseSettings.DEFAULT_DATABASE.equals(database)) {
+            logger.debug("ClickHouse is configured to use 'default' Database");
+            return;
+        }
+
+        final ClickHouseProperties properties = new ClickHouseProperties(configuration.getProperties());
+        properties.setDatabase(ClickHouseSettings.DEFAULT_DATABASE);
+        properties.setConnectionTimeout(createTimeout);
+        properties.setDataTransferTimeout(createTimeout);
+        final ClickHouseConfiguration newConfiguration = new ClickHouseConfiguration(properties);
+
+        final long setupStart = System.nanoTime();
+        try (ClickHouseConnection clickHouseConnection = new ClickHouseDriver().connect(newConfiguration.getJDBC(), properties)) {
+            try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
+                statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
+            }
+        } catch (Exception e) {
+            throw new ConfigurationException("Could not create ClickHouse Database due to connection failure: " + e.getMessage());
+        }
+
+        final long tookNanoTime = System.nanoTime() - setupStart;
+        logger.info("ClickHouse Database '{}' creation took '{}' millis", database, tookNanoTime / 1000000);
     }
 }
