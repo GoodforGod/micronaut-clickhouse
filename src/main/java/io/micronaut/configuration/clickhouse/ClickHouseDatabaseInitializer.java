@@ -22,7 +22,7 @@ import javax.inject.Inject;
  * @author Anton Kurako (GoodforGod)
  * @since 27.3.2020
  */
-@Requires(property = "clickhouse.createDatabaseIfNotExist", value = "true", defaultValue = "false")
+@Requires(property = ClickHouseSettings.PREFIX + ".createDatabaseIfNotExist", value = "true", defaultValue = "false")
 @Requires(beans = ClickHouseConfiguration.class)
 @Context
 @Internal
@@ -30,17 +30,12 @@ public class ClickHouseDatabaseInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${arangodb.createDatabaseIfNotExist.timeout:10}")
+    @Value("${clickhouse.createDatabaseIfNotExist.timeout:10}")
     private Integer createTimeout;
 
     @PostConstruct
     @Inject
     protected void setupDatabase(ClickHouseConfiguration configuration) {
-        if (!configuration.isCreateDatabaseIfNotExist()) {
-            logger.debug("ClickHouse Database creation is set to 'false'");
-            return;
-        }
-
         final String database = configuration.getProperties().getDatabase();
         if (ClickHouseSettings.DEFAULT_DATABASE.equals(database)) {
             logger.debug("ClickHouse is configured to use 'default' Database");
@@ -58,8 +53,6 @@ public class ClickHouseDatabaseInitializer {
             try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
                 statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
             }
-        } catch (RuntimeException e) {
-            throw new ConfigurationException("ClickHouse Database creation failed due to: " + e.getCause().getMessage());
         } catch (Exception e) {
             throw new ConfigurationException("ClickHouse Database creation failed due to: " + e.getMessage());
         }

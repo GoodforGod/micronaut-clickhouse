@@ -75,7 +75,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
     void databaseCreationIsOff() {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
-        properties.put("clickhouse.database", "my");
+        properties.put("clickhouse.database", ClickHouseSettings.DEFAULT_DATABASE);
         properties.put("clickhouse.createDatabaseIfNotExist", false);
 
         final ApplicationContext context = ApplicationContext.run(properties);
