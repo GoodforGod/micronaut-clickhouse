@@ -58,8 +58,10 @@ public class ClickHouseDatabaseInitializer {
             try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
                 statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
             }
+        } catch (RuntimeException e) {
+            throw new ConfigurationException("ClickHouse Database creation failed due to: " + e.getCause().getMessage());
         } catch (Exception e) {
-            throw new ConfigurationException("Could not create ClickHouse Database due to connection failure: " + e.getMessage());
+            throw new ConfigurationException("ClickHouse Database creation failed due to: " + e.getMessage());
         }
 
         final long tookNanoTime = System.nanoTime() - setupStart;
