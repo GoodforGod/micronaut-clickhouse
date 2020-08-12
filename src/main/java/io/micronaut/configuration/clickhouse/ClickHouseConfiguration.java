@@ -18,7 +18,7 @@ import java.util.Properties;
 public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     @ConfigurationBuilder(prefixes = "set")
-    private ClickHouseProperties properties;
+    private final ClickHouseProperties properties;
 
     private boolean createDatabaseIfNotExist = false;
 

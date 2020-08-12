@@ -45,10 +45,11 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    micronautBom platform('io.micronaut:micronaut-bom:1.3.7')
+    micronautBom platform('io.micronaut:micronaut-bom:2.0.1')
 
     annotationProcessor 'io.micronaut:micronaut-inject-java'
     compileOnly 'io.micronaut:micronaut-inject-java'

@@ -1,6 +1,7 @@
 package io.micronaut.configuration.clickhouse.health;
 
 import io.micronaut.configuration.clickhouse.ClickHouseConfiguration;
+import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.HttpStatus;
@@ -28,7 +29,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2020
  */
-@Requires(property = "clickhouse.health.enabled", value = "true", defaultValue = "true")
+@Requires(property = ClickHouseSettings.PREFIX + ".health.enabled", value = "true", defaultValue = "true")
 @Requires(beans = ClickHouseConfiguration.class)
 @Singleton
 public class ClickHouseHealthIndicator implements HealthIndicator {
