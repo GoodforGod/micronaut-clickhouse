@@ -16,7 +16,7 @@ Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/Goodfor
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.0.0'
+    compile 'com.github.goodforgod:micronaut-clickhouse:2.0.1'
 }
 ```
 
@@ -25,7 +25,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 

@@ -49,13 +49,13 @@ repositories {
 }
 
 dependencies {
-    micronautBom platform('io.micronaut:micronaut-bom:2.0.1')
+    micronautBom platform('io.micronaut:micronaut-bom:2.0.3')
 
     annotationProcessor 'io.micronaut:micronaut-inject-java'
     compileOnly 'io.micronaut:micronaut-inject-java'
 
     api 'ru.yandex.clickhouse:clickhouse-jdbc:0.2.4'
-    api 'com.github.housepower:clickhouse-native-jdbc:2.1-stable'
+    api 'com.github.housepower:clickhouse-native-jdbc:2.2-stable'
 
     implementation 'io.micronaut:micronaut-http-client'
     implementation 'io.micronaut:micronaut-management'

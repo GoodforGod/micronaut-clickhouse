@@ -54,7 +54,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     public Publisher<HealthResult> getResult() {
         return Flowable.fromPublisher(client.retrieve("/ping"))
                 .map(this::buildUpReport)
-                .timeout(10, SECONDS)
+                .timeout(5, SECONDS)
                 .retry(3)
                 .onErrorReturn(this::buildDownReport);
     }
