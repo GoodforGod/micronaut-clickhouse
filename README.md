@@ -196,6 +196,8 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
 
+**2.0.1** - Java updated to 11, Micronaut updated to 2.1.0, Micronaut plugin added.
+
 **2.0.0** - Micronaut 2 support, database init timeout property added, dependency updated.
 
 **1.0.2** - Dependencies updated.
