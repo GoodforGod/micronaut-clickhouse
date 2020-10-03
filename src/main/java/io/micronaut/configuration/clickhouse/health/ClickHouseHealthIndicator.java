@@ -16,7 +16,6 @@ import org.reactivestreams.Publisher;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;
@@ -60,7 +59,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     }
 
     private HealthResult buildUpReport(String response) {
-        final Map<String, String> details = Collections.singletonMap("database", database);
+        final Map<String, String> details = Map.of("database", database);
         return getBuilder().details(details).status(UP).build();
     }
 
@@ -69,7 +68,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
                 && HttpStatus.INTERNAL_SERVER_ERROR.equals(((HttpClientResponseException) t).getStatus())) {
             final String errorMessage = String.format("ClickHouse responded with '500' code and message: %s",
                     ((HttpClientResponseException) t).getResponse());
-            return getBuilder().status(DOWN).details(errorMessage).build();
+            return getBuilder().status(DOWN).details(Map.of("error", errorMessage)).build();
         }
 
         return getBuilder().status(DOWN).exception(t).build();
