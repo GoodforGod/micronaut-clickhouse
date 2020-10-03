@@ -11,6 +11,8 @@ This project includes integration between Micronaut and ClickHouse.
 
 Starting from version *2.0.0* library ships for *Micronaut 2*.
 
+Starting from version *2.0.1* Java 11+ is required (previous version 1.8+ compatible).
+
 Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
 
 **Gradle**
