@@ -1,7 +1,7 @@
 package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.runtime.exceptions.ApplicationStartupException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
@@ -101,8 +101,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
             ApplicationContext.run(properties);
             fail("Should not happen!");
         } catch (Exception e) {
-            assertTrue(e.getCause().getCause() instanceof ConfigurationException);
-            assertTrue(e.getCause().getCause().getMessage().startsWith("ClickHouse Database creation failed"));
+            assertTrue(e.getCause().getCause() instanceof ApplicationStartupException);
         }
     }
 }

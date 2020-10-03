@@ -3,7 +3,6 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
-import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.runtime.exceptions.ApplicationStartupException;
 import org.slf4j.Logger;
