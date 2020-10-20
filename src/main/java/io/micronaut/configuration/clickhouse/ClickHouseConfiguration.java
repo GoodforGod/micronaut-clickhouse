@@ -73,4 +73,11 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     public String getURL() {
         return getURL(properties);
     }
+
+    @Override
+    public String toString() {
+        Properties properties = this.properties.asProperties();
+        properties.put("createDatabaseIfNotExist", createDatabaseIfNotExist);
+        return properties.toString();
+    }
 }

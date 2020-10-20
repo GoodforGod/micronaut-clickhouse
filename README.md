@@ -193,7 +193,7 @@ clickhouse:
 
 For testing purposes you can use [ClickHouse TestContainer library](https://www.testcontainers.org/modules/databases/clickhouse/).
 
-TestContainers allows you to use integration tests with real database in all docker friendly environments, 
+TestContainers allows you to use integration tests against real database in all docker friendly environments, 
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History

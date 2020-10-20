@@ -125,4 +125,9 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
             throw new ConfigurationException(e.getMessage(), e.getCause());
         }
     }
+
+    @Override
+    public String toString() {
+        return properties.toString();
+    }
 }
