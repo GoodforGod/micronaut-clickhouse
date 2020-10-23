@@ -39,9 +39,9 @@ class ClickHouseHealthTests extends Assertions {
     }
 
     @Test
-    void checkHealthDown() {
+    void checkHealthDownBadRequest() {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", 9001);
+        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.NATIVE_PORT));
         properties.put("clickhouse.async", true);
 
         final ApplicationContext context = ApplicationContext.run(properties);
@@ -50,6 +50,23 @@ class ClickHouseHealthTests extends Assertions {
         final HealthResult result = Single.fromPublisher(indicator.getResult()).timeout(60, TimeUnit.SECONDS).blockingGet();
         assertEquals(HealthStatus.DOWN, result.getStatus());
         assertEquals("clickhouse", result.getName());
+        assertTrue(result.getDetails() instanceof Map);
+        assertNotNull(((Map<?, ?>) result.getDetails()).get("httpCode"));
+        assertNotNull(((Map<?, ?>) result.getDetails()).get("body"));
         assertNotNull(result.getDetails());
+    }
+
+    @Test
+    void checkHealthDown() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.port", 9091);
+        properties.put("clickhouse.async", true);
+
+        final ApplicationContext context = ApplicationContext.run(properties);
+        final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
+
+        final HealthResult result = Single.fromPublisher(indicator.getResult()).timeout(60, TimeUnit.SECONDS).blockingGet();
+        assertEquals(HealthStatus.DOWN, result.getStatus());
+        assertEquals("clickhouse", result.getName());
     }
 }

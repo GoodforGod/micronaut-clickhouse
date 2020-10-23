@@ -4,7 +4,6 @@ import io.micronaut.configuration.clickhouse.ClickHouseConfiguration;
 import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
@@ -72,23 +71,20 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        if (e instanceof HttpClientResponseException
-                && HttpStatus.INTERNAL_SERVER_ERROR.equals(((HttpClientResponseException) e).getStatus())) {
-            final String errorMessage = String.format("ClickHouse responded with '500' code and message: %s",
-                    ((HttpClientResponseException) e).getResponse());
-
-            logger.debug("Health '{}' reported DOWN with error: {}", NAME, errorMessage);
-            return getBuilder()
-                    .status(DOWN)
-                    .exception(e)
-                    .details(Map.of("error", errorMessage))
-                    .build();
+        Map<String, Object> details = null;
+        if (e instanceof HttpClientResponseException) {
+            final int code = ((HttpClientResponseException) e).getStatus().getCode();
+            final Object body = ((HttpClientResponseException) e).getResponse().body();
+            details = (body == null)
+                    ? Map.of("httpCode", code)
+                    : Map.of("httpCode", code, "body", body);
         }
 
         logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
+                .details(details)
                 .build();
     }
 
