@@ -11,12 +11,14 @@ This project includes integration between Micronaut and ClickHouse.
 
 Starting from version *2.0.0* library ships for *Micronaut 2*.
 
+Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
+
 Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
 
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.0.0'
+    compile 'com.github.goodforgod:micronaut-clickhouse:2.1.0'
 }
 ```
 
@@ -25,7 +27,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -141,7 +143,7 @@ There is an option to initialize database if it doesn't exist on startup via *cr
 
 ```yaml
 clickhouse:
-  createDatabaseIfNotExist: true        # default - false
+  create-database-if-not-exist: true    # default - false
 ```
 
 Default timeout for operation set to 10 seconds, if you want to specify timeout *in seconds* for database creation
@@ -149,8 +151,7 @@ on startup you can set it via property.
 
 ```yaml
 clickhouse:
-  createDatabaseIfNotExist: true    # default - false
-    timeout: 30                     # time in seconds
+  create-database-timeout-in-millis: 500 # default - 10000
 ```
 
 ### Health Check
@@ -191,10 +192,12 @@ clickhouse:
 
 For testing purposes you can use [ClickHouse TestContainer library](https://www.testcontainers.org/modules/databases/clickhouse/).
 
-TestContainers allows you to use integration tests with real database in all docker friendly environments, 
+TestContainers allows you to use integration tests against real database in all docker friendly environments, 
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**2.1.0** - Java updated to 11, Micronaut updated to 2.1.1.
 
 **2.0.0** - Micronaut 2 support, database init timeout property added, dependency updated.
 

@@ -25,6 +25,7 @@ class ClickHouseNativeConfigurationTests extends Assertions {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseNativeConfiguration configuration = context.getBean(ClickHouseNativeConfiguration.class);
         final Properties props = configuration.getProperties();
+        assertNotNull(configuration.toString());
 
         assertEquals(9999, props.get(SettingKey.port.name()));
         assertEquals("127.0.0.1", props.get(SettingKey.address.name()));

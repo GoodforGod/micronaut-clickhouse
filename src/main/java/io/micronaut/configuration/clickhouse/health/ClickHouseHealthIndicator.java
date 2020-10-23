@@ -4,7 +4,6 @@ import io.micronaut.configuration.clickhouse.ClickHouseConfiguration;
 import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
@@ -12,11 +11,12 @@ import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;
@@ -33,6 +33,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Requires(beans = ClickHouseConfiguration.class)
 @Singleton
 public class ClickHouseHealthIndicator implements HealthIndicator {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * The name to expose details with.
@@ -54,25 +56,36 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     public Publisher<HealthResult> getResult() {
         return Flowable.fromPublisher(client.retrieve("/ping"))
                 .map(this::buildUpReport)
-                .timeout(10, SECONDS)
+                .timeout(5, SECONDS)
                 .retry(3)
                 .onErrorReturn(this::buildDownReport);
     }
 
     private HealthResult buildUpReport(String response) {
-        final Map<String, String> details = Collections.singletonMap("database", database);
-        return getBuilder().details(details).status(UP).build();
+        final Map<String, String> details = Map.of("database", database);
+        logger.debug("Health '{}' reported UP with details: {}", NAME, details);
+        return getBuilder()
+                .details(details)
+                .status(UP)
+                .build();
     }
 
-    private HealthResult buildDownReport(Throwable t) {
-        if (t instanceof HttpClientResponseException
-                && HttpStatus.INTERNAL_SERVER_ERROR.equals(((HttpClientResponseException) t).getStatus())) {
-            final String errorMessage = String.format("ClickHouse responded with '500' code and message: %s",
-                    ((HttpClientResponseException) t).getResponse());
-            return getBuilder().status(DOWN).details(errorMessage).build();
+    private HealthResult buildDownReport(Throwable e) {
+        Map<String, Object> details = null;
+        if (e instanceof HttpClientResponseException) {
+            final int code = ((HttpClientResponseException) e).getStatus().getCode();
+            final Object body = ((HttpClientResponseException) e).getResponse().body();
+            details = (body == null)
+                    ? Map.of("httpCode", code)
+                    : Map.of("httpCode", code, "body", body);
         }
 
-        return getBuilder().status(DOWN).exception(t).build();
+        logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
+        return getBuilder()
+                .status(DOWN)
+                .exception(e)
+                .details(details)
+                .build();
     }
 
     private static HealthResult.Builder getBuilder() {

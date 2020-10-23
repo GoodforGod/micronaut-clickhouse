@@ -23,6 +23,11 @@ class ClickHouseConfigurationTests extends Assertions {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConfiguration configuration = context.getBean(ClickHouseConfiguration.class);
         final ClickHouseProperties props = configuration.getProperties();
+        assertNotNull(configuration.toString());
+        assertFalse(configuration.isCreateDatabaseIfNotExist());
+        assertEquals(10000, configuration.getCreateDatabaseTimeoutInMillis());
+        assertNotNull(configuration.getHealth());
+        assertTrue(configuration.getHealth().isEnabled());
 
         assertEquals(9999, props.getPort());
         assertEquals("127.0.0.1", props.getHost());
