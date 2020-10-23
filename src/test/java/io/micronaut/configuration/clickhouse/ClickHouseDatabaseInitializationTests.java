@@ -28,7 +28,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
         properties.put("clickhouse.database", "custom");
-        properties.put("clickhouse.createDatabaseIfNotExist", true);
+        properties.put("clickhouse.create-database-if-not-exist", true);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConnection connection = context.getBean(ClickHouseConnection.class);
@@ -52,7 +52,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
         properties.put("clickhouse.database", ClickHouseSettings.DEFAULT_DATABASE);
-        properties.put("clickhouse.createDatabaseIfNotExist", true);
+        properties.put("clickhouse.create-database-if-not-exist", true);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConnection connection = context.getBean(ClickHouseConnection.class);
@@ -76,7 +76,7 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
         properties.put("clickhouse.database", ClickHouseSettings.DEFAULT_DATABASE);
-        properties.put("clickhouse.createDatabaseIfNotExist", false);
+        properties.put("clickhouse.create-database-if-not-exist", false);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConnection connection = context.getBean(ClickHouseConnection.class);
@@ -94,8 +94,8 @@ class ClickHouseDatabaseInitializationTests extends Assertions {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.port", 7457);
         properties.put("clickhouse.database", "customos");
-        properties.put("clickhouse.createDatabaseIfNotExist", true);
-        properties.put("clickhouse.createDatabaseIfNotExist.timeout", 1);
+        properties.put("clickhouse.create-database-if-not-exist", true);
+        properties.put("clickhouse.create-database-timeout-in-millis", 1);
 
         try {
             ApplicationContext.run(properties);

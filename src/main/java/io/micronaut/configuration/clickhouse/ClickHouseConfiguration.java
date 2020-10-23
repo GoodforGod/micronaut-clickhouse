@@ -20,10 +20,14 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     @ConfigurationBuilder(prefixes = "set")
     private final ClickHouseProperties properties;
 
+    @ConfigurationBuilder("health")
+    private final EnableConfiguration health = new EnableConfiguration(true);
+
     private boolean createDatabaseIfNotExist = false;
+    private int createDatabaseTimeoutInMillis = 10000;
 
     /**
-     * new props to init default values
+     * New props to init default values
      */
     public ClickHouseConfiguration() {
         this.properties = new ClickHouseProperties(new Properties());
@@ -74,10 +78,22 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         return getURL(properties);
     }
 
+    public EnableConfiguration getHealth() {
+        return health;
+    }
+
+    public int getCreateDatabaseTimeoutInMillis() {
+        return createDatabaseTimeoutInMillis;
+    }
+
+    public void setCreateDatabaseTimeoutInMillis(int createDatabaseTimeoutInMillis) {
+        this.createDatabaseTimeoutInMillis = createDatabaseTimeoutInMillis;
+    }
+
     @Override
     public String toString() {
         Properties properties = this.properties.asProperties();
-        properties.put("createDatabaseIfNotExist", createDatabaseIfNotExist);
+        properties.put("create-database-if-not-exist", createDatabaseIfNotExist);
         return properties.toString();
     }
 }
