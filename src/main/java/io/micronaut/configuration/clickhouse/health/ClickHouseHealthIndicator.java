@@ -12,6 +12,8 @@ import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
@@ -32,6 +34,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Requires(beans = ClickHouseConfiguration.class)
 @Singleton
 public class ClickHouseHealthIndicator implements HealthIndicator {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * The name to expose details with.
@@ -60,18 +64,32 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
 
     private HealthResult buildUpReport(String response) {
         final Map<String, String> details = Map.of("database", database);
-        return getBuilder().details(details).status(UP).build();
+        logger.debug("Health '{}' reported UP with details: {}", NAME, details);
+        return getBuilder()
+                .details(details)
+                .status(UP)
+                .build();
     }
 
-    private HealthResult buildDownReport(Throwable t) {
-        if (t instanceof HttpClientResponseException
-                && HttpStatus.INTERNAL_SERVER_ERROR.equals(((HttpClientResponseException) t).getStatus())) {
+    private HealthResult buildDownReport(Throwable e) {
+        if (e instanceof HttpClientResponseException
+                && HttpStatus.INTERNAL_SERVER_ERROR.equals(((HttpClientResponseException) e).getStatus())) {
             final String errorMessage = String.format("ClickHouse responded with '500' code and message: %s",
-                    ((HttpClientResponseException) t).getResponse());
-            return getBuilder().status(DOWN).details(Map.of("error", errorMessage)).build();
+                    ((HttpClientResponseException) e).getResponse());
+
+            logger.debug("Health '{}' reported DOWN with error: {}", NAME, errorMessage);
+            return getBuilder()
+                    .status(DOWN)
+                    .exception(e)
+                    .details(Map.of("error", errorMessage))
+                    .build();
         }
 
-        return getBuilder().status(DOWN).exception(t).build();
+        logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
+        return getBuilder()
+                .status(DOWN)
+                .exception(e)
+                .build();
     }
 
     private static HealthResult.Builder getBuilder() {
