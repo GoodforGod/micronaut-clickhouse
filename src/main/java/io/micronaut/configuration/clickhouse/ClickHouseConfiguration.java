@@ -92,8 +92,6 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     @Override
     public String toString() {
-        Properties properties = this.properties.asProperties();
-        properties.put("create-database-if-not-exist", createDatabaseIfNotExist);
-        return properties.toString();
+        return this.properties.asProperties().toString();
     }
 }

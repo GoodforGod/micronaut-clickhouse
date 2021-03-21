@@ -8,7 +8,6 @@ import io.micronaut.context.annotation.Requires;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Anton Kurako (GoodforGod)

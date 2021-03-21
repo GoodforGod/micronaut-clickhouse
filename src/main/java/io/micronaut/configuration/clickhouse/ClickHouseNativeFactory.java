@@ -4,7 +4,6 @@ import com.github.housepower.jdbc.ClickHouseConnection;
 import com.github.housepower.jdbc.settings.ClickHouseConfig;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.runtime.context.scope.Refreshable;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -22,7 +21,6 @@ import java.sql.SQLException;
 @Factory
 public class ClickHouseNativeFactory {
 
-    @Refreshable(ClickHouseSettings.PREFIX_NATIVE)
     @Named("clickhouse-native-singleton")
     @Bean(preDestroy = "close")
     @Singleton
@@ -36,7 +34,6 @@ public class ClickHouseNativeFactory {
     }
 
     @Primary
-    @Refreshable(ClickHouseSettings.PREFIX_NATIVE)
     @Named("clickhouse-native")
     @Bean(preDestroy = "close")
     @Prototype

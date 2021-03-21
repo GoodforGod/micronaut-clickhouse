@@ -56,7 +56,8 @@ class ClickHouseNativeFactoryTests extends ClickhouseRunner {
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final BalancedClickhouseDataSource source = context.getBean(BalancedClickhouseDataSource.class);
-        final ru.yandex.clickhouse.BalancedClickhouseDataSource sourceOfficial = context.getBean(ru.yandex.clickhouse.BalancedClickhouseDataSource.class);
+        final ru.yandex.clickhouse.BalancedClickhouseDataSource sourceOfficial = context
+                .getBean(ru.yandex.clickhouse.BalancedClickhouseDataSource.class);
 
         assertTrue(source.getConnection().createStatement().execute(container.getTestQueryString()));
         assertTrue(sourceOfficial.getConnection().createStatement().execute(container.getTestQueryString()));

@@ -5,7 +5,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 
-This project includes integration between Micronaut and ClickHouse.
+This project includes integration between Micronaut and ClickHouse, autocompletion for configuration, official & native driver support, health check and more.
 
 ## Dependency :rocket:
 
@@ -31,7 +31,6 @@ dependencies {
 </dependency>
 ```
 
-
 ## Configuration
 
 Includes a configuration to automatically configure official [ClickHouse Java drive](https://github.com/ClickHouse/clickhouse-jdbc)
@@ -47,53 +46,62 @@ clickhouse:
     port: 9000          # default - 9000
 ```
 
-To use [official driver](https://github.com/ClickHouse/clickhouse-jdbc) just add a dependency to your application.
+## Official Driver
 
-```groovy
-compile 'ru.yandex.clickhouse:clickhouse-jdbc'
-```
+### Connections
 
-To use [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) just add a dependency to your application.
-
-```groovy
-compile 'com.github.housepower:clickhouse-native-jdbc'
-```
-
-### Drivers
-
-Both *ClickHouse Official* and *ClickHouse Native* connections are then available for dependency injection.
-
-Connections are injected as [**singletons**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) 
-beans remember that while using them.
+Connections are injected as [**Prototypes**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
 
 ```java
 @Inject
 private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
-
+                                        // both are equally correct injections
+@Named("clickhouse")
 @Inject
-private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
+private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
 ```
 
-In case you want to inject **[prototype](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
+Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
+
+```java
+@Named("clickhouse")
+@Inject
+private java.sql.Connection officialConnection;
+```
+
+In case you want to inject **[Singleton](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
 connections, you can specify @Named *prototype* and connection prototype bean will be injected.
 
 ```java
-@Named("prototype")
+@Named("clickhouse-singleton")
 @Inject
-private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
+private java.sql.Connection officialConnection;
+```
 
-@Named("prototype")
+### Balanced DataSource
+
+javax.sql.DataSource with balanced are injected as [**Singleton**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
+
+```java
 @Inject
-private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
+private ru.yandex.clickhouse.BalancedClickhouseDataSource officialDataSource;
+```
+
+Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
+
+```java
+@Named("clickhouse")
+@Inject
+private java.sql.DataSource officialDataSource;
 ```
 
 ### Configuring ClickHouse Official Driver
 
-Only *official connections* are provided as [**refreshable**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) with *ClickHouse* key for bean refresh.
+All configs are provided via **full autocompletion**.
 
 Official Configuration supports all available ClickHouse driver settings.
 
-Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java) 
+Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java)
 for info about all parameters.
 ```yaml
 clickhouse:
@@ -103,18 +111,59 @@ clickhouse:
   ...
 ```
 
+## Native Driver
+
+### Connections
+
+Connections are injected as [**Prototypes**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
+
+```java
+@Inject
+private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
+```
+
+Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
+
+```java
+@Named("clickhouse-native")
+@Inject
+private java.sql.Connection nativeConnection;
+```
+
+In case you want to inject **[Singleton](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
+connections, you can specify @Named *prototype* and connection prototype bean will be injected.
+
+```java
+@Named("clickhouse-native-singleton")
+@Inject
+private java.sql.Connection nativeConnection;
+```
+
+### Balanced DataSource
+
+javax.sql.DataSource with balanced are injected as [**Singleton**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
+
+```java
+@Inject
+private com.github.housepower.jdbc.BalancedClickhouseDataSource nativeDataSource;
+```
+
+Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
+
+```java
+@Named("clickhouse-native")
+@Inject
+private java.sql.DataSource nativeDataSource;
+```
+
 ### Configuring ClickHouse Native Driver
 
-**Remember** that native driver uses **port different from official** driver, 
-which is default to *9000* and not *8529*.
-So your ClickHouse instance should be exposed with that port for native driver.
-
-Configuration for port and other settings for native driver are in *different section* that official one, 
-even if some of them overlap by default.
-
-Native configuration supports all native driver settings.
+All configs are provided via **full autocompletion**.
 
 Settings for native driver are available under *clickhouse.native* prefix as per example below.
+
+**Remember** that native driver uses **port different from official** driver, which is default to *9000* and not *8529*.
+So your ClickHouse instance should be exposed with that port for native driver.
 
 Check [ClickHouse Native settings file](https://github.com/housepower/ClickHouse-Native-JDBC/blob/master/src/main/java/com/github/housepower/jdbc/settings/SettingKey.java) 
 for info about all parameters.
@@ -127,11 +176,7 @@ clickhouse:
   ...
 ```
 
-Some settings are equivalent to [Official ClickHouse driver configuration](#configuring-clickhouse-official-driver) by default:
-* connect_timeout - equal to official connectionTimeout (default)
-* use_client_time_zone - false (default)
-
-#### Database Initialization
+## Database Initialization
 
 There is an option to initialize database if it doesn't exist on startup via *createDatabaseIfNotExist* option.
 
@@ -148,7 +193,7 @@ clickhouse:
   create-database-timeout-in-millis: 500 # default - 10000
 ```
 
-### Health Check
+## Health Check
 
 Health check for ClickHouse is provided and is *turned on* by default.
 
@@ -191,7 +236,7 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
 
-**2.1.0** - //TODO
+**2.2.0** - //TODO
 
 **2.1.0** - Java updated to 11, Micronaut updated to 2.1.1.
 

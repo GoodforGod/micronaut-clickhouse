@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.runtime.context.scope.Refreshable;
 import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickHouseDriver;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
@@ -33,7 +32,6 @@ public class ClickHouseFactory {
         }
     }
 
-    @Refreshable(ClickHouseSettings.PREFIX)
     @Named("clickhouse-singleton")
     @Bean(preDestroy = "close")
     @Singleton
@@ -42,7 +40,6 @@ public class ClickHouseFactory {
     }
 
     @Primary
-    @Refreshable(ClickHouseSettings.PREFIX)
     @Named("clickhouse")
     @Bean(preDestroy = "close")
     @Prototype
