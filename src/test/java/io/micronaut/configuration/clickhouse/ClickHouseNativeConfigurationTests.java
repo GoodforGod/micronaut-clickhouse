@@ -14,7 +14,7 @@ import java.util.Properties;
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */
-class ClickHouseNativeConfigurationTests extends Assertions {
+class ClickHouseNativeConfigurationTests extends ClickhouseRunner {
 
     @Test
     void createWithCorrectDatabaseAsConfigured() {
@@ -28,7 +28,7 @@ class ClickHouseNativeConfigurationTests extends Assertions {
         assertNotNull(configuration.toString());
 
         assertEquals(9999, props.get(SettingKey.port.name()));
-        assertEquals("127.0.0.1", props.get(SettingKey.address.name()));
+        assertEquals("127.0.0.1", props.get(SettingKey.host.name()));
         assertEquals("custom", props.get(SettingKey.database.name()));
 
         assertNotNull(configuration.getJDBC());
@@ -55,7 +55,7 @@ class ClickHouseNativeConfigurationTests extends Assertions {
         final Properties props = configuration.getProperties();
 
         assertEquals(9001, props.get(SettingKey.port.name()));
-        assertEquals("localhost", props.get(SettingKey.address.name()));
+        assertEquals("localhost", props.get(SettingKey.host.name()));
         assertEquals("native", props.get(SettingKey.database.name()));
 
         final ClickHouseConfiguration configurationOfficial = context.getBean(ClickHouseConfiguration.class);

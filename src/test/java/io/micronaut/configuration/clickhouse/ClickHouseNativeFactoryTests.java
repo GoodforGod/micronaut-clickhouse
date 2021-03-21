@@ -15,10 +15,10 @@ import java.util.Map;
  * @since 23.3.2020
  */
 @Testcontainers
-class ClickHouseNativeFactoryTests extends Assertions {
+class ClickHouseNativeFactoryTests extends ClickhouseRunner {
 
     @Container
-    private final ClickHouseContainer container = new ClickHouseContainer();
+    private final ClickHouseContainer container = getContainer();
 
     @Test
     void nativeConnectionTestQuerySuccess() throws Exception {

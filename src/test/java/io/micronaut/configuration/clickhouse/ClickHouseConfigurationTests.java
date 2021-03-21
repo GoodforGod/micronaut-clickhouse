@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */
-class ClickHouseConfigurationTests extends Assertions {
+class ClickHouseConfigurationTests extends ClickhouseRunner {
 
     @Test
     void createWithCorrectDatabaseAsConfigured() {

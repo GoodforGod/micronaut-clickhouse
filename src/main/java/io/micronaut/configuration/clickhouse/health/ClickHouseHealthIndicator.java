@@ -71,20 +71,10 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        Map<String, Object> details = null;
-        if (e instanceof HttpClientResponseException) {
-            final int code = ((HttpClientResponseException) e).getStatus().getCode();
-            final Object body = ((HttpClientResponseException) e).getResponse().body();
-            details = (body == null)
-                    ? Map.of("httpCode", code)
-                    : Map.of("httpCode", code, "body", body);
-        }
-
         logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
-                .details(details)
                 .build();
     }
 
