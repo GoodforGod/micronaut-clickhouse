@@ -18,7 +18,7 @@ Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/Goodfor
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.1.0'
+    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.0'
 }
 ```
 
@@ -27,7 +27,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -105,7 +105,6 @@ clickhouse:
 
 ### Configuring ClickHouse Native Driver
 
-
 **Remember** that native driver uses **port different from official** driver, 
 which is default to *9000* and not *8529*.
 So your ClickHouse instance should be exposed with that port for native driver.
@@ -129,12 +128,7 @@ clickhouse:
 ```
 
 Some settings are equivalent to [Official ClickHouse driver configuration](#configuring-clickhouse-official-driver) by default:
-* http_receive_timeout - equal to official connectionTimeout (default)
-* http_send_timeout - equal to official connectionTimeout (default)
 * connect_timeout - equal to official connectionTimeout (default)
-* query_timeout - equal to official connectionTimeout multiplied by 1000 (default)
-* connect_timeout_with_failover_ms - equal to official connectionTimeout (default)
-* max_read_buffer_size - equal to official bufferSize (default)
 * use_client_time_zone - false (default)
 
 #### Database Initialization
@@ -196,6 +190,8 @@ TestContainers allows you to use integration tests against real database in all 
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**2.1.0** - //TODO
 
 **2.1.0** - Java updated to 11, Micronaut updated to 2.1.1.
 

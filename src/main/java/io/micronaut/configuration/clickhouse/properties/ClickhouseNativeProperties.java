@@ -9,6 +9,8 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @see io.micronaut.configuration.clickhouse.ClickHouseNativeConfiguration
@@ -672,6 +674,21 @@ public class ClickhouseNativeProperties {
     private Boolean tcpKeepAlive;
     private Duration queryTimeout;
 
+    private final Map<String, Object> additionalSettings = new HashMap<>();
+
+    public void addSettings(SettingKey key, Object value) {
+        addSettings(key.name(), value);
+    }
+
+    public void addSettings(String key, Object value) {
+        if(value != null)
+            this.additionalSettings.put(key, value);
+    }
+
+    public void withProperties(Properties properties) {
+        properties.forEach((k,v) -> addSettings(String.valueOf(k), v));
+    }
+
     public Map<SettingKey, Object> getSettings() {
         final Map<SettingKey, Object> settings = new HashMap<>();
 
@@ -749,68 +766,75 @@ public class ClickhouseNativeProperties {
         setSetting(settings, SettingKey.input_format_values_interpret_expressions, inputFormatValuesInterpretExpressions);
         setSetting(settings, SettingKey.output_format_json_quote_64bit_integers, outputFormatJsonQuote_64bitIntegers);
         setSetting(settings, SettingKey.output_format_json_quote_denormals, outputFormatJsonQuoteDenormals);
-        setSetting(settings, SettingKey.min_compress_block_size, outputFormatPrettyMaxRows);
-        setSetting(settings, SettingKey.min_compress_block_size, useClientTimeZone);
-        setSetting(settings, SettingKey.min_compress_block_size, sendProgressInHttpHeaders);
-        setSetting(settings, SettingKey.min_compress_block_size, httpHeadersProgressIntervalMs);
-        setSetting(settings, SettingKey.min_compress_block_size, fsyncMetadata);
-        setSetting(settings, SettingKey.min_compress_block_size, inputFormatAllowErrorsNum);
-        setSetting(settings, SettingKey.min_compress_block_size, inputFormatAllowErrorsRatio);
-        setSetting(settings, SettingKey.min_compress_block_size, joinUseNulls);
-        setSetting(settings, SettingKey.min_compress_block_size, maxReplicaDelayForDistributedQueries);
-        setSetting(settings, SettingKey.min_compress_block_size, fallbackToStaleReplicasForDistributedQueries);
-        setSetting(settings, SettingKey.min_compress_block_size, preferredMaxColumnInBlockSizeBytes);
-        setSetting(settings, SettingKey.min_compress_block_size, insertDistributedSync);
-        setSetting(settings, SettingKey.min_compress_block_size, insertDistributedTimeout);
-        setSetting(settings, SettingKey.min_compress_block_size, distributedDdlTaskTimeout);
-        setSetting(settings, SettingKey.min_compress_block_size, streamFlushIntervalMs);
-        setSetting(settings, SettingKey.min_compress_block_size, formatSchema);
-        setSetting(settings, SettingKey.min_compress_block_size, insertAllowMaterializedColumns);
-        setSetting(settings, SettingKey.min_compress_block_size, httpConnectionTimeout);
-        setSetting(settings, SettingKey.min_compress_block_size, httpSendTimeout);
-        setSetting(settings, SettingKey.min_compress_block_size, httpReceiveTimeout);
-        setSetting(settings, SettingKey.min_compress_block_size, optimizeThrowIfNoop);
-        setSetting(settings, SettingKey.min_compress_block_size, useIndexForInWithSubqueries);
-        setSetting(settings, SettingKey.min_compress_block_size, emptyResultForAggregationByEmptySet);
-        setSetting(settings, SettingKey.min_compress_block_size, allowDistributedDdl);
-        setSetting(settings, SettingKey.min_compress_block_size, odbcMaxFieldSize);
-        setSetting(settings, SettingKey.min_compress_block_size, maxRowsToRead);
-        setSetting(settings, SettingKey.min_compress_block_size, maxBytesToRead);
-        setSetting(settings, SettingKey.min_compress_block_size, maxResultRows);
-        setSetting(settings, SettingKey.min_compress_block_size, maxResultBytes);
-        setSetting(settings, SettingKey.min_compress_block_size, resultOverflowMode);
-        setSetting(settings, SettingKey.min_compress_block_size, minExecutionSpeed);
-        setSetting(settings, SettingKey.min_compress_block_size, timeoutBeforeCheckingExecutionSpeed);
-        setSetting(settings, SettingKey.min_compress_block_size, maxAstDepth);
-        setSetting(settings, SettingKey.min_compress_block_size, maxAstElements);
-        setSetting(settings, SettingKey.min_compress_block_size, maxExpandedAstElements);
-        setSetting(settings, SettingKey.min_compress_block_size, readonly);
-        setSetting(settings, SettingKey.min_compress_block_size, maxRowsInSet);
-        setSetting(settings, SettingKey.min_compress_block_size, maxBytesInSet);
-        setSetting(settings, SettingKey.min_compress_block_size, maxRowsInJoin);
-        setSetting(settings, SettingKey.min_compress_block_size, maxBytesInJoin);
-        setSetting(settings, SettingKey.min_compress_block_size, maxRowsToTransfer);
-        setSetting(settings, SettingKey.min_compress_block_size, maxBytesToTransfer);
-        setSetting(settings, SettingKey.min_compress_block_size, maxRowsInDistinct);
-        setSetting(settings, SettingKey.min_compress_block_size, maxBytesInDistinct);
-        setSetting(settings, SettingKey.min_compress_block_size, maxMemoryUsage);
-        setSetting(settings, SettingKey.min_compress_block_size, maxMemoryUsageForUser);
-        setSetting(settings, SettingKey.min_compress_block_size, maxMemoryUsageForAllQueries);
-        setSetting(settings, SettingKey.min_compress_block_size, maxNetworkBandwidth);
-        setSetting(settings, SettingKey.min_compress_block_size, maxNetworkBytes);
-        setSetting(settings, SettingKey.min_compress_block_size, maxNetworkBandwidthForUser);
-        setSetting(settings, SettingKey.min_compress_block_size, maxNetworkBandwidthForAllUsers);
-        setSetting(settings, SettingKey.min_compress_block_size, formatCsvDelimiter);
-        setSetting(settings, SettingKey.min_compress_block_size, enableConditionalComputation);
-        setSetting(settings, SettingKey.min_compress_block_size, allowExperimentalBigintTypes);
-        setSetting(settings, SettingKey.min_compress_block_size, charset);
-        setSetting(settings, SettingKey.min_compress_block_size, port);
-        setSetting(settings, SettingKey.min_compress_block_size, user);
-        setSetting(settings, SettingKey.min_compress_block_size, host);
-        setSetting(settings, SettingKey.min_compress_block_size, database);
-        setSetting(settings, SettingKey.min_compress_block_size, password);
-        setSetting(settings, SettingKey.min_compress_block_size, tcpKeepAlive);
-        setSetting(settings, SettingKey.min_compress_block_size, queryTimeout);
+        setSetting(settings, SettingKey.output_format_pretty_max_rows, outputFormatPrettyMaxRows);
+        setSetting(settings, SettingKey.use_client_time_zone, useClientTimeZone);
+        setSetting(settings, SettingKey.send_progress_in_http_headers, sendProgressInHttpHeaders);
+        setSetting(settings, SettingKey.http_headers_progress_interval_ms, httpHeadersProgressIntervalMs);
+        setSetting(settings, SettingKey.fsync_metadata, fsyncMetadata);
+        setSetting(settings, SettingKey.input_format_allow_errors_num, inputFormatAllowErrorsNum);
+        setSetting(settings, SettingKey.input_format_allow_errors_ratio, inputFormatAllowErrorsRatio);
+        setSetting(settings, SettingKey.join_use_nulls, joinUseNulls);
+        setSetting(settings, SettingKey.max_replica_delay_for_distributed_queries, maxReplicaDelayForDistributedQueries);
+        setSetting(settings, SettingKey.fallback_to_stale_replicas_for_distributed_queries, fallbackToStaleReplicasForDistributedQueries);
+        setSetting(settings, SettingKey.preferred_max_column_in_block_size_bytes, preferredMaxColumnInBlockSizeBytes);
+        setSetting(settings, SettingKey.insert_distributed_sync, insertDistributedSync);
+        setSetting(settings, SettingKey.insert_distributed_timeout, insertDistributedTimeout);
+        setSetting(settings, SettingKey.distributed_ddl_task_timeout, distributedDdlTaskTimeout);
+        setSetting(settings, SettingKey.stream_flush_interval_ms, streamFlushIntervalMs);
+        setSetting(settings, SettingKey.format_schema, formatSchema);
+        setSetting(settings, SettingKey.insert_allow_materialized_columns, insertAllowMaterializedColumns);
+        setSetting(settings, SettingKey.http_connection_timeout, httpConnectionTimeout);
+        setSetting(settings, SettingKey.http_send_timeout, httpSendTimeout);
+        setSetting(settings, SettingKey.http_receive_timeout, httpReceiveTimeout);
+        setSetting(settings, SettingKey.optimize_throw_if_noop, optimizeThrowIfNoop);
+        setSetting(settings, SettingKey.use_index_for_in_with_subqueries, useIndexForInWithSubqueries);
+        setSetting(settings, SettingKey.empty_result_for_aggregation_by_empty_set, emptyResultForAggregationByEmptySet);
+        setSetting(settings, SettingKey.allow_distributed_ddl, allowDistributedDdl);
+        setSetting(settings, SettingKey.odbc_max_field_size, odbcMaxFieldSize);
+        setSetting(settings, SettingKey.max_rows_to_read, maxRowsToRead);
+        setSetting(settings, SettingKey.max_bytes_to_read, maxBytesToRead);
+        setSetting(settings, SettingKey.max_result_rows, maxResultRows);
+        setSetting(settings, SettingKey.max_result_bytes, maxResultBytes);
+        setSetting(settings, SettingKey.result_overflow_mode, resultOverflowMode);
+        setSetting(settings, SettingKey.min_execution_speed, minExecutionSpeed);
+        setSetting(settings, SettingKey.timeout_before_checking_execution_speed, timeoutBeforeCheckingExecutionSpeed);
+        setSetting(settings, SettingKey.max_ast_depth, maxAstDepth);
+        setSetting(settings, SettingKey.max_ast_elements, maxAstElements);
+        setSetting(settings, SettingKey.max_expanded_ast_elements, maxExpandedAstElements);
+        setSetting(settings, SettingKey.readonly, readonly);
+        setSetting(settings, SettingKey.max_rows_in_set, maxRowsInSet);
+        setSetting(settings, SettingKey.max_bytes_in_set, maxBytesInSet);
+        setSetting(settings, SettingKey.max_rows_in_join, maxRowsInJoin);
+        setSetting(settings, SettingKey.max_bytes_in_join, maxBytesInJoin);
+        setSetting(settings, SettingKey.max_rows_to_transfer, maxRowsToTransfer);
+        setSetting(settings, SettingKey.max_bytes_to_transfer, maxBytesToTransfer);
+        setSetting(settings, SettingKey.max_rows_in_distinct, maxRowsInDistinct);
+        setSetting(settings, SettingKey.max_bytes_in_distinct, maxBytesInDistinct);
+        setSetting(settings, SettingKey.max_memory_usage, maxMemoryUsage);
+        setSetting(settings, SettingKey.max_memory_usage_for_user, maxMemoryUsageForUser);
+        setSetting(settings, SettingKey.max_memory_usage_for_all_queries, maxMemoryUsageForAllQueries);
+        setSetting(settings, SettingKey.max_network_bandwidth, maxNetworkBandwidth);
+        setSetting(settings, SettingKey.max_network_bytes, maxNetworkBytes);
+        setSetting(settings, SettingKey.max_network_bandwidth_for_user, maxNetworkBandwidthForUser);
+        setSetting(settings, SettingKey.max_network_bandwidth_for_all_users, maxNetworkBandwidthForAllUsers);
+        setSetting(settings, SettingKey.format_csv_delimiter, formatCsvDelimiter);
+        setSetting(settings, SettingKey.enable_conditional_computation, enableConditionalComputation);
+        setSetting(settings, SettingKey.allow_experimental_bigint_types, allowExperimentalBigintTypes);
+        setSetting(settings, SettingKey.charset, charset);
+        setSetting(settings, SettingKey.port, port);
+        setSetting(settings, SettingKey.user, user);
+        setSetting(settings, SettingKey.host, host);
+        setSetting(settings, SettingKey.database, database);
+        setSetting(settings, SettingKey.password, password);
+        setSetting(settings, SettingKey.tcp_keep_alive, tcpKeepAlive);
+        setSetting(settings, SettingKey.query_timeout, queryTimeout);
+
+        additionalSettings.entrySet().stream()
+                .filter(e -> SettingKey.definedSettingKeys().containsKey(e.getKey()))
+                .forEach(e -> {
+                    final SettingKey key = SettingKey.definedSettingKeys().get(e.getKey());
+                    settings.put(key, e.getValue());
+                });
 
         return settings;
     }
