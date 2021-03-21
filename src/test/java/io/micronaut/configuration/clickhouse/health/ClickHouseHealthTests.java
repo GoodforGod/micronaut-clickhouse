@@ -5,8 +5,6 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.health.HealthStatus;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -57,8 +55,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
         assertEquals(HealthStatus.DOWN, result.getStatus());
         assertEquals("clickhouse", result.getName());
         assertTrue(result.getDetails() instanceof Map);
-        assertNotNull(((Map<?, ?>) result.getDetails()).get("httpCode"));
-        assertNotNull(((Map<?, ?>) result.getDetails()).get("body"));
+        assertNotNull(((Map<?, ?>) result.getDetails()).get("error"));
         assertNotNull(result.getDetails());
     }
 

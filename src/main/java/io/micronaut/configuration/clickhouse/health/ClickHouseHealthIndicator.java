@@ -6,7 +6,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RxHttpClient;
-import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;

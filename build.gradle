@@ -47,9 +47,6 @@ micronaut {
 
 dependencies {
     annotationProcessor 'io.micronaut:micronaut-inject-java'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-    compileOnly 'org.projectlombok:lombok:1.18.16'
     compileOnly 'io.micronaut:micronaut-inject-java'
 
     api 'ru.yandex.clickhouse:clickhouse-jdbc:0.2.6'
@@ -63,8 +60,8 @@ dependencies {
     testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    testImplementation 'org.testcontainers:junit-jupiter:1.15.2'
-    testImplementation 'org.testcontainers:clickhouse:1.15.2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.14.3'
+    testImplementation 'org.testcontainers:clickhouse:1.14.3'
 
     testImplementation 'io.micronaut.test:micronaut-test-core'
     testImplementation 'io.micronaut.test:micronaut-test-junit5'

@@ -23,11 +23,7 @@ import java.sql.SQLException;
 @Factory
 public class ClickHouseFactory {
 
-    private final ru.yandex.clickhouse.ClickHouseDriver driver;
-
-    public ClickHouseFactory() {
-        this.driver = new ClickHouseDriver();
-    }
+    private final ru.yandex.clickhouse.ClickHouseDriver driver = new ClickHouseDriver();
 
     public ru.yandex.clickhouse.ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
         try {
@@ -38,18 +34,19 @@ public class ClickHouseFactory {
     }
 
     @Refreshable(ClickHouseSettings.PREFIX)
+    @Named("clickhouse-singleton")
     @Bean(preDestroy = "close")
     @Singleton
-    @Primary
     public ru.yandex.clickhouse.ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
         return getConnection(configuration.getJDBC(), configuration.getProperties());
     }
 
+    @Primary
     @Refreshable(ClickHouseSettings.PREFIX)
+    @Named("clickhouse")
     @Bean(preDestroy = "close")
     @Prototype
-    @Named("prototype")
     protected ru.yandex.clickhouse.ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
-        return getConnection(configuration);
+        return getConnection(configuration.getJDBC(), configuration.getProperties());
     }
 }

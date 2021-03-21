@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import com.github.housepower.jdbc.settings.SettingKey;
 import io.micronaut.context.ApplicationContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
@@ -34,10 +33,6 @@ class ClickHouseNativeConfigurationTests extends ClickhouseRunner {
         assertNotNull(configuration.getJDBC());
         assertTrue(configuration.getJDBC().contains("127.0.0.1"));
         assertTrue(configuration.getJDBC().contains("custom"));
-
-        assertNotNull(configuration.getURL());
-        assertTrue(configuration.getURL().contains("127.0.0.1"));
-        assertTrue(configuration.getURL().contains("9999"));
     }
 
     @Test
@@ -55,7 +50,7 @@ class ClickHouseNativeConfigurationTests extends ClickhouseRunner {
         final Properties props = configuration.getProperties();
 
         assertEquals(9001, props.get(SettingKey.port.name()));
-        assertEquals("localhost", props.get(SettingKey.host.name()));
+        assertEquals("127.0.0.1", props.get(SettingKey.host.name()));
         assertEquals("native", props.get(SettingKey.database.name()));
 
         final ClickHouseConfiguration configurationOfficial = context.getBean(ClickHouseConfiguration.class);

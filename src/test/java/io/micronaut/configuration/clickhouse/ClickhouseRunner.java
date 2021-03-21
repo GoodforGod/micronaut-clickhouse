@@ -10,7 +10,11 @@ import org.testcontainers.utility.DockerImageName;
  */
 public abstract class ClickhouseRunner extends Assertions {
 
+    protected static String getClickhouseVersion() {
+        return "21.3.3.14";
+    }
+
     protected ClickHouseContainer getContainer() {
-        return new ClickHouseContainer(DockerImageName.parse("yandex/clickhouse-server"));
+        return new ClickHouseContainer(DockerImageName.parse("yandex/clickhouse-server:" + getClickhouseVersion()));
     }
 }

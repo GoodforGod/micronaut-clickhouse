@@ -15,4 +15,5 @@
     </root>
 
     <logger name="io.micronaut.context" level="INFO"/>
+    <logger name="io.micronaut.configuration.clickhouse" level="DEBUG"/>
 </configuration>

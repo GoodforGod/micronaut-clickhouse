@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.runtime.exceptions.ApplicationStartupException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -34,7 +33,7 @@ class ClickHouseDatabaseInitializationTests extends ClickhouseRunner {
         final ClickHouseConnection connection = context.getBean(ClickHouseConnection.class);
 
         final String version = connection.getServerVersion();
-        assertEquals("18.10.3", version);
+        assertEquals(getClickhouseVersion(), version);
 
         assertTrue(connection.createStatement().execute(container.getTestQueryString()));
 
@@ -58,7 +57,7 @@ class ClickHouseDatabaseInitializationTests extends ClickhouseRunner {
         final ClickHouseConnection connection = context.getBean(ClickHouseConnection.class);
 
         final String version = connection.getServerVersion();
-        assertEquals("18.10.3", version);
+        assertEquals(getClickhouseVersion(), version);
 
         assertTrue(connection.createStatement().execute(container.getTestQueryString()));
 

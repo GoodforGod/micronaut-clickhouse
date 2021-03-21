@@ -1,7 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
