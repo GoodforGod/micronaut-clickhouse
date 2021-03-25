@@ -36,7 +36,7 @@ public class ClickHouseFactory {
     @Bean(preDestroy = "close")
     @Singleton
     public ru.yandex.clickhouse.ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
-        return getConnection(configuration.getJDBC(), configuration.getProperties());
+        return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 
     @Primary
@@ -44,6 +44,6 @@ public class ClickHouseFactory {
     @Bean(preDestroy = "close")
     @Prototype
     protected ru.yandex.clickhouse.ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
-        return getConnection(configuration.getJDBC(), configuration.getProperties());
+        return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 }

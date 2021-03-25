@@ -28,12 +28,12 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
     @ConfigurationBuilder(prefixes = "set")
     private final ClickhouseNativeProperties properties = new ClickhouseNativeProperties();
 
-    private String jdbcUrl;
+    private String url;
 
     /**
-     * User {@link #jdbcUrl} as provided without {@link #properties}
+     * User {@link #url} as provided without {@link #properties}
      */
-    private boolean useRawJdbcUrl = true;
+    private boolean useRawUrl = true;
 
     /**
      * Setups default non native configs for native configurations as some of them
@@ -70,10 +70,10 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
     }
 
     /**
-     * @return JDBC connections url for ClickHouse driver
+     * @return connection url for ClickHouse
      */
-    public String getJDBC() {
-        if (StringUtils.isEmpty(jdbcUrl)) {
+    public String getUrl() {
+        if (StringUtils.isEmpty(url)) {
             final Properties props = this.properties.asProperties();
             props.remove(SettingKey.host.name());
             props.remove(SettingKey.port.name());
@@ -81,17 +81,17 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
             return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), props);
         }
 
-        return jdbcUrl;
+        return url;
     }
 
-    public void setJdbcUrl(String jdbcUrl) {
-        final List<String> urls = splitUrl(jdbcUrl);
+    public void setUrl(String url) {
+        final List<String> urls = splitUrl(url);
         final String firstJdbcUrl = urls.get(0);
 
         final ClickHouseConfig config = ClickHouseConfig.Builder.builder().withJdbcUrl(firstJdbcUrl).build();
         config.settings().forEach(properties::addSettings);
-        if(isUseRawJdbcUrl()) {
-            this.jdbcUrl = jdbcUrl;
+        if(isUseRawUrl()) {
+            this.url = url;
             return;
         }
 
@@ -99,18 +99,18 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
         props.remove(SettingKey.host.name());
         props.remove(SettingKey.port.name());
         props.remove(SettingKey.database.name());
-        final int propsStartFrom = jdbcUrl.indexOf("?");
-        this.jdbcUrl = (propsStartFrom == -1)
-                ? jdbcUrl + getJdbcProperties(props)
-                : jdbcUrl.substring(0, propsStartFrom) + getJdbcProperties(props);
+        final int propsStartFrom = url.indexOf("?");
+        this.url = (propsStartFrom == -1)
+                ? url + getJdbcProperties(props)
+                : url.substring(0, propsStartFrom) + getJdbcProperties(props);
     }
 
-    public boolean isUseRawJdbcUrl() {
-        return useRawJdbcUrl;
+    public boolean isUseRawUrl() {
+        return useRawUrl;
     }
 
-    public void setUseRawJdbcUrl(boolean useRawJdbcUrl) {
-        this.useRawJdbcUrl = useRawJdbcUrl;
+    public void setUseRawUrl(boolean useRawUrl) {
+        this.useRawUrl = useRawUrl;
     }
 
     /**

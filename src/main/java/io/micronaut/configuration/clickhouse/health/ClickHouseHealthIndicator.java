@@ -44,7 +44,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
 
     public ClickHouseHealthIndicator(ClickHouseConfiguration configuration) {
         try {
-            this.client = RxHttpClient.create(new URL(configuration.getURL()));
+            this.client = RxHttpClient.create(configuration.getURI().toURL());
             this.database = configuration.getProperties().getDatabase();
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e.getMessage());

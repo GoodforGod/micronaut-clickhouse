@@ -32,12 +32,12 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     private boolean createDatabaseIfNotExist = false;
     private int createDatabaseTimeoutInMillis = 10000;
 
-    private String jdbcUrl;
+    private String url;
 
     /**
-     * User {@link #jdbcUrl} as provided without {@link #properties}
+     * User {@link #url} as provided without {@link #properties}
      */
-    private boolean useRawJdbcUrl = true;
+    private boolean useRawUrl = true;
 
     /**
      * New props to init default values
@@ -78,12 +78,12 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     }
 
     /**
-     * @return JDBC connections url for ClickHouse driver
+     * @return connection url for ClickHouse
      */
-    public String getJDBC() {
-        return StringUtils.isEmpty(jdbcUrl)
+    public String getUrl() {
+        return StringUtils.isEmpty(url)
                 ? getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties())
-                : jdbcUrl;
+                : url;
     }
 
     public URI getURI() {
@@ -104,33 +104,33 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         this.createDatabaseTimeoutInMillis = createDatabaseTimeoutInMillis;
     }
 
-    public void setJdbcUrl(String jdbcUrl) {
+    public void setUrl(String url) {
         try {
-            final List<String> urls = splitUrl(jdbcUrl);
+            final List<String> urls = splitUrl(url);
             final String firstJdbcUrl = urls.get(0);
             final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
             this.properties.merge(urlProperties);
 
-            if(isUseRawJdbcUrl()) {
-                this.jdbcUrl = jdbcUrl;
+            if(isUseRawUrl()) {
+                this.url = url;
                 return;
             }
 
-            final int propsStartFrom = jdbcUrl.indexOf("?");
-            this.jdbcUrl = (propsStartFrom == -1)
-                    ? jdbcUrl + getJdbcProperties(properties.asProperties())
-                    : jdbcUrl.substring(0, propsStartFrom) + getJdbcProperties(properties.asProperties());
+            final int propsStartFrom = url.indexOf("?");
+            this.url = (propsStartFrom == -1)
+                    ? url + getJdbcProperties(properties.asProperties())
+                    : url.substring(0, propsStartFrom) + getJdbcProperties(properties.asProperties());
         } catch (URISyntaxException e) {
             throw new ConfigurationException(e.getMessage());
         }
     }
 
-    public boolean isUseRawJdbcUrl() {
-        return useRawJdbcUrl;
+    public boolean isUseRawUrl() {
+        return useRawUrl;
     }
 
-    public void setUseRawJdbcUrl(boolean useRawJdbcUrl) {
-        this.useRawJdbcUrl = useRawJdbcUrl;
+    public void setUseRawUrl(boolean useRawUrl) {
+        this.useRawUrl = useRawUrl;
     }
 
     @Override

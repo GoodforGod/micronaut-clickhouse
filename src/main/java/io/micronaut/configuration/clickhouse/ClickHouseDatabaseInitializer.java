@@ -47,7 +47,7 @@ public class ClickHouseDatabaseInitializer {
 
         logger.debug("ClickHouse Database '{}' initialization starting...", database);
         final long setupStart = System.nanoTime();
-        try (ClickHouseConnection clickHouseConnection = new ClickHouseDriver().connect(newConfiguration.getJDBC(), properties)) {
+        try (ClickHouseConnection clickHouseConnection = new ClickHouseDriver().connect(newConfiguration.getUrl(), properties)) {
             try (ClickHouseStatement statement = clickHouseConnection.createStatement()) {
                 statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
             }
