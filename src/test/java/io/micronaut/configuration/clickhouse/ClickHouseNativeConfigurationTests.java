@@ -23,16 +23,16 @@ class ClickHouseNativeConfigurationTests extends ClickhouseRunner {
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseNativeConfiguration configuration = context.getBean(ClickHouseNativeConfiguration.class);
-        final Properties props = configuration.getProperties();
+        final Properties props = configuration.asProperties();
         assertNotNull(configuration.toString());
 
         assertEquals(9999, props.get(SettingKey.port.name()));
         assertEquals("127.0.0.1", props.get(SettingKey.host.name()));
         assertEquals("custom", props.get(SettingKey.database.name()));
 
-        assertNotNull(configuration.getJDBC());
-        assertTrue(configuration.getJDBC().contains("127.0.0.1"));
-        assertTrue(configuration.getJDBC().contains("custom"));
+        assertNotNull(configuration.getUrl());
+        assertTrue(configuration.getUrl().contains("127.0.0.1"));
+        assertTrue(configuration.getUrl().contains("custom"));
     }
 
     @Test
@@ -47,7 +47,7 @@ class ClickHouseNativeConfigurationTests extends ClickhouseRunner {
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseNativeConfiguration configuration = context.getBean(ClickHouseNativeConfiguration.class);
-        final Properties props = configuration.getProperties();
+        final Properties props = configuration.asProperties();
 
         assertEquals(9001, props.get(SettingKey.port.name()));
         assertEquals("127.0.0.1", props.get(SettingKey.host.name()));

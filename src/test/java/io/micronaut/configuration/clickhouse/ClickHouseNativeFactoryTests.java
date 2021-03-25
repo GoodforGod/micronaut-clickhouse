@@ -47,19 +47,4 @@ class ClickHouseNativeFactoryTests extends ClickhouseRunner {
         assertTrue(connectionOfficial.createStatement().execute(container.getTestQueryString()));
         assertTrue(connectionNative.createStatement().execute(container.getTestQueryString()));
     }
-
-    @Test
-    void getBalancedConnection() throws Exception {
-        final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
-        properties.put("clickhouse.native.port", container.getMappedPort(ClickHouseContainer.NATIVE_PORT));
-
-        final ApplicationContext context = ApplicationContext.run(properties);
-        final BalancedClickhouseDataSource source = context.getBean(BalancedClickhouseDataSource.class);
-        final ru.yandex.clickhouse.BalancedClickhouseDataSource sourceOfficial = context
-                .getBean(ru.yandex.clickhouse.BalancedClickhouseDataSource.class);
-
-        assertTrue(source.getConnection().createStatement().execute(container.getTestQueryString()));
-        assertTrue(sourceOfficial.getConnection().createStatement().execute(container.getTestQueryString()));
-    }
 }

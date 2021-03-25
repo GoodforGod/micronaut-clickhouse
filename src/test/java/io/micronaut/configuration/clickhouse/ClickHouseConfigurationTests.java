@@ -33,14 +33,9 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         assertEquals("default", props.getDatabase());
         assertFalse(props.isAsync());
 
-        assertNotNull(configuration.getJDBC());
-        assertTrue(configuration.getJDBC().contains("127.0.0.1"));
-        assertTrue(configuration.getJDBC().contains("default"));
-
-        assertNotNull(configuration.getURL());
-        assertTrue(configuration.getURL().contains("127.0.0.1"));
-        assertTrue(configuration.getURL().contains("9999"));
-        assertTrue(configuration.getURL().contains("https"));
+        assertNotNull(configuration.getUrl());
+        assertTrue(configuration.getUrl().contains("127.0.0.1"));
+        assertTrue(configuration.getUrl().contains("default"));
     }
 
     @Test
