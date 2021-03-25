@@ -3,8 +3,14 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.util.StringUtils;
+import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,6 +31,13 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     private boolean createDatabaseIfNotExist = false;
     private int createDatabaseTimeoutInMillis = 10000;
+
+    private String jdbcUrl;
+
+    /**
+     * User {@link #jdbcUrl} as provided without {@link #properties}
+     */
+    private boolean useRawJdbcUrl = true;
 
     /**
      * New props to init default values
@@ -68,14 +81,15 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
      * @return JDBC connections url for ClickHouse driver
      */
     public String getJDBC() {
-        return getJDBC(properties);
+        return StringUtils.isEmpty(jdbcUrl)
+                ? getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties())
+                : jdbcUrl;
     }
 
-    /**
-     * @return HTTP url for ClickHouse server
-     */
-    public String getURL() {
-        return getURL(properties);
+    public URI getURI() {
+        return (properties.getSsl())
+                ? URI.create(String.format("https://%s:%s", properties.getHost(), properties.getPort()))
+                : URI.create(String.format("http://%s:%s", properties.getHost(), properties.getPort()));
     }
 
     public EnableConfiguration getHealth() {
@@ -88,6 +102,35 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     public void setCreateDatabaseTimeoutInMillis(int createDatabaseTimeoutInMillis) {
         this.createDatabaseTimeoutInMillis = createDatabaseTimeoutInMillis;
+    }
+
+    public void setJdbcUrl(String jdbcUrl) {
+        try {
+            final List<String> urls = splitUrl(jdbcUrl);
+            final String firstJdbcUrl = urls.get(0);
+            final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
+            this.properties.merge(urlProperties);
+
+            if(isUseRawJdbcUrl()) {
+                this.jdbcUrl = jdbcUrl;
+                return;
+            }
+
+            final int propsStartFrom = jdbcUrl.indexOf("?");
+            this.jdbcUrl = (propsStartFrom == -1)
+                    ? jdbcUrl + getJdbcProperties(properties.asProperties())
+                    : jdbcUrl.substring(0, propsStartFrom) + getJdbcProperties(properties.asProperties());
+        } catch (URISyntaxException e) {
+            throw new ConfigurationException(e.getMessage());
+        }
+    }
+
+    public boolean isUseRawJdbcUrl() {
+        return useRawJdbcUrl;
+    }
+
+    public void setUseRawJdbcUrl(boolean useRawJdbcUrl) {
+        this.useRawJdbcUrl = useRawJdbcUrl;
     }
 
     @Override

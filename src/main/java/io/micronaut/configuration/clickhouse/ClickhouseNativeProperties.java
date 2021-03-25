@@ -1893,7 +1893,23 @@ public class ClickhouseNativeProperties {
         properties.forEach((k, v) -> addSettings(String.valueOf(k), v));
     }
 
-    public Map<SettingKey, Object> getSettings() {
+    public Properties asProperties() {
+        final Properties properties = new Properties();
+        asSettings().forEach((k,v) -> {
+            if(v instanceof Duration) {
+                if(k.type().equals(SettingType.Seconds)) {
+                    properties.put(k.name(), ((Duration) v).toSeconds());
+                } else  {
+                    properties.put(k.name(), ((Duration) v).toMillis());
+                }
+            } else {
+                properties.put(k.name(), v);
+            }
+        });
+        return properties;
+    }
+
+    public Map<SettingKey, Object> asSettings() {
         final Map<SettingKey, Object> settings = new HashMap<>();
 
         setSetting(settings, SettingKey.min_compress_block_size, minCompressBlockSize);
