@@ -90,7 +90,7 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
 
         final ClickHouseConfig config = ClickHouseConfig.Builder.builder().withJdbcUrl(firstJdbcUrl).build();
         config.settings().forEach(properties::addSettings);
-        if(isUseRawUrl()) {
+        if (isUseRawUrl()) {
             this.url = url;
             return;
         }

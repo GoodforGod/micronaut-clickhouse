@@ -49,8 +49,8 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
-                + ",localhost:" +  container2.getMappedPort(ClickHouseContainer.NATIVE_PORT)
-                +"/default?compress=1&decompress=2";
+                + ",localhost:" + container2.getMappedPort(ClickHouseContainer.NATIVE_PORT)
+                + "/default?compress=1&decompress=2";
         properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
 
         final ApplicationContext context = ApplicationContext.run(properties);
@@ -72,7 +72,7 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
-                +"/default?compress=1&decompress=2";
+                + "/default?compress=1&decompress=2";
         properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
 
         final ApplicationContext context = ApplicationContext.run(properties);
@@ -95,7 +95,7 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
-                +"/default?compress=1&decompress=2";
+                + "/default?compress=1&decompress=2";
         properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
         properties.put("clickhouse.native.user-raw-jdbc-url", false);
 

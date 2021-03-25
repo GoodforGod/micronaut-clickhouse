@@ -111,7 +111,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
             final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
             this.properties.merge(urlProperties);
 
-            if(isUseRawUrl()) {
+            if (isUseRawUrl()) {
                 this.url = url;
                 return;
             }

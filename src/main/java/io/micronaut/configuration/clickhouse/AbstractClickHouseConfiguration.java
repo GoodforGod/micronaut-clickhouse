@@ -1,11 +1,11 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.settings.SettingKey;
-import io.micronaut.core.util.StringUtils;
 import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,7 +52,7 @@ public abstract class AbstractClickHouseConfiguration {
             final String key = String.valueOf(entry.getKey());
             final String value = String.valueOf(entry.getValue());
             final String delimiter = (isFirst) ? "?" : "&";
-            if(key.isBlank() || value.isBlank()
+            if (key.isBlank() || value.isBlank()
                     || key.contains("/") || value.contains("/")
                     || key.contains("-") || value.contains("-"))
                 continue;

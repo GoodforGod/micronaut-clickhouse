@@ -1,6 +1,5 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.BalancedClickhouseDataSource;
 import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;

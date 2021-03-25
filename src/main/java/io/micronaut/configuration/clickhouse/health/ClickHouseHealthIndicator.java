@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;

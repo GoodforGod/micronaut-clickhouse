@@ -1895,11 +1895,11 @@ public class ClickhouseNativeProperties {
 
     public Properties asProperties() {
         final Properties properties = new Properties();
-        asSettings().forEach((k,v) -> {
-            if(v instanceof Duration) {
-                if(k.type().equals(SettingType.Seconds)) {
+        asSettings().forEach((k, v) -> {
+            if (v instanceof Duration) {
+                if (k.type().equals(SettingType.Seconds)) {
                     properties.put(k.name(), ((Duration) v).toSeconds());
-                } else  {
+                } else {
                     properties.put(k.name(), ((Duration) v).toMillis());
                 }
             } else {
