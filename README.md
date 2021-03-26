@@ -9,12 +9,6 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 
 ## Dependency :rocket:
 
-Starting from version *2.0.0* library ships for *Micronaut 2*.
-
-Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
-
-Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
-
 **Gradle**
 ```groovy
 dependencies {
@@ -31,11 +25,17 @@ dependencies {
 </dependency>
 ```
 
+Starting from version *2.0.0* library ships for *Micronaut 2*.
+
+Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
+
+Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
+
 ## Configuration
 
 Includes a configuration to automatically configure official [ClickHouse Java drive](https://github.com/ClickHouse/clickhouse-jdbc)
 or [ClickHouse Native Driver](https://github.com/housepower/ClickHouse-Native-JDBC). 
-Just configure the host, port, credentials (if needed) of the ClickHouse driver in *application.yml*.
+Just configure the host, port, credentials or url in *application.yml*.
 
 ```yaml
 clickhouse:
@@ -105,10 +105,43 @@ Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhou
 for info about all parameters.
 ```yaml
 clickhouse:
+  url: jdbc:clickhouse://localhost:8529/default?compress=1
+  host: 127.0.0.1       # default - 127.0.0.1
+  port: 8529            # default - 8529
+  database: default     # default - default
   async: true                           # default - false
   ssl: true                             # default - false
   maxRedirects: 5
   ...
+```
+
+You can specify connection only with URL and combine additional properties with URL:
+```yaml
+clickhouse:
+  url: jdbc:clickhouse://localhost:8529/default?compress=1
+  ssl: true                             # default - false
+  maxRedirects: 5
+  ...
+```
+
+Final connection URL in this case will be:
+```text
+jdbc:clickhouse://localhost:8529/default?compress=1&maxRedirects=5&ssl=true
+```
+
+You can also specify to use only URL as provided:
+```yaml
+clickhouse:
+  url: jdbc:clickhouse://localhost:8529,localhost:8530/default?compress=1
+  use-raw-url: true
+  ssl: true                             # default - false
+  maxRedirects: 5
+  ...
+```
+
+Final connection URL in this case will be (additional properties out side of URL will be ignored):
+```text
+jdbc:clickhouse://localhost:8529,localhost:8530/default?compress=1
 ```
 
 ## Native Driver
@@ -176,6 +209,38 @@ clickhouse:
   ...
 ```
 
+You can specify connection only with URL and combine additional properties with URL:
+```yaml
+clickhouse:
+  native:
+    url: jdbc:clickhouse://localhost:9000/default?compress=1
+    ssl: true                             # default - false
+    maxRedirects: 5
+    ...
+```
+
+Final connection URL in this case will be:
+```text
+jdbc:clickhouse://localhost:9000/default?compress=1&maxRedirects=5&ssl=true
+```
+
+You can also specify to use only URL as provided:
+```yaml
+clickhouse:
+  native:
+    url: jdbc:clickhouse://localhost:8529/default?compress=1
+    use-raw-url: true
+    ssl: true                             # default - false
+    maxRedirects: 5
+    ...
+```
+
+Final connection URL in this case will be (additional properties out side of URL will be ignored):
+```text
+jdbc:clickhouse://localhost:8529/default?compress=1
+```
+
+
 ## Database Initialization
 
 There is an option to initialize database if it doesn't exist on startup via *createDatabaseIfNotExist* option.
@@ -236,7 +301,7 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
 
-**2.2.0** - //TODO
+**2.2.0** - Balanced official & native DataSource added, autocomplete for native configuration, url configuration for official & native driver, Singleton connection -> Prototype connection by default, Micronaut updated to 2.4.1, configuration improvements.
 
 **2.1.0** - Java updated to 11, Micronaut updated to 2.1.1.
 
