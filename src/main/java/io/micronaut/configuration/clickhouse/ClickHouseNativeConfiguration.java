@@ -29,6 +29,7 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
     private final ClickhouseNativeProperties properties = new ClickhouseNativeProperties();
 
     private String url;
+    private String rawUrl;
 
     /**
      * User {@link #url} as provided without {@link #properties}
@@ -81,20 +82,16 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
             return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), props);
         }
 
-        return url;
+        return isUseRawUrl() ? rawUrl : url;
     }
 
     public void setUrl(String url) {
+        this.rawUrl = url;
+
         final List<String> urls = splitUrl(url);
         final String firstJdbcUrl = urls.get(0);
-
         final ClickHouseConfig config = ClickHouseConfig.Builder.builder().withJdbcUrl(firstJdbcUrl).build();
         config.settings().forEach(properties::addSettings);
-        if (isUseRawUrl()) {
-            this.url = url;
-            return;
-        }
-
         final Properties props = this.properties.asProperties();
         props.remove(SettingKey.host.name());
         props.remove(SettingKey.port.name());

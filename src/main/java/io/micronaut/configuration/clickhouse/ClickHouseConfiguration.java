@@ -33,6 +33,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     private int createDatabaseTimeoutInMillis = 10000;
 
     private String url;
+    private String rawUrl;
 
     /**
      * User {@link #url} as provided without {@link #properties}
@@ -81,9 +82,10 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
      * @return connection url for ClickHouse
      */
     public String getUrl() {
-        return StringUtils.isEmpty(url)
-                ? getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties())
-                : url;
+        if (StringUtils.isEmpty(url))
+            return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties());
+
+        return isUseRawUrl() ? rawUrl : url;
     }
 
     public URI getURI() {
@@ -105,17 +107,12 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     }
 
     public void setUrl(String url) {
+        this.rawUrl = url;
         try {
             final List<String> urls = splitUrl(url);
             final String firstJdbcUrl = urls.get(0);
             final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
             this.properties.merge(urlProperties);
-
-            if (isUseRawUrl()) {
-                this.url = url;
-                return;
-            }
-
             final int propsStartFrom = url.indexOf("?");
             this.url = (propsStartFrom == -1)
                     ? url + getJdbcProperties(properties.asProperties())

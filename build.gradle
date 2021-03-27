@@ -74,6 +74,10 @@ test {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
+
+    jacoco {
+        excludes += ['**/ClickhouseNativeProperties.java']
+    }
 }
 
 tasks.withType(JavaCompile) {
