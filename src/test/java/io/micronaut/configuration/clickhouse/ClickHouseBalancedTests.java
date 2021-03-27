@@ -45,13 +45,13 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
                 + container.getMappedPort(ClickHouseContainer.HTTP_PORT)
                 + ",localhost:" + container2.getMappedPort(ClickHouseContainer.HTTP_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.jdbc-url", officialJdbcUrl);
+        properties.put("clickhouse.url", officialJdbcUrl);
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
                 + ",localhost:" + container2.getMappedPort(ClickHouseContainer.NATIVE_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
+        properties.put("clickhouse.native.url", nativeJdbcUrl);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final BalancedClickhouseDataSource source = context.getBean(BalancedClickhouseDataSource.class);
@@ -68,12 +68,12 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
         final String officialJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.HTTP_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.jdbc-url", officialJdbcUrl);
+        properties.put("clickhouse.url", officialJdbcUrl);
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
+        properties.put("clickhouse.native.url", nativeJdbcUrl);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final BalancedClickhouseDataSource source = context.getBean(BalancedClickhouseDataSource.class);
@@ -90,14 +90,14 @@ class ClickHouseBalancedTests extends ClickhouseRunner {
         final String officialJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.HTTP_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.jdbc-url", officialJdbcUrl);
-        properties.put("clickhouse.user-raw-jdbc-url", false);
+        properties.put("clickhouse.url", officialJdbcUrl);
+        properties.put("clickhouse.user-raw-url", false);
 
         final String nativeJdbcUrl = "jdbc:clickhouse://localhost:"
                 + container.getMappedPort(ClickHouseContainer.NATIVE_PORT)
                 + "/default?compress=1&decompress=2";
-        properties.put("clickhouse.native.jdbc-url", nativeJdbcUrl);
-        properties.put("clickhouse.native.user-raw-jdbc-url", false);
+        properties.put("clickhouse.native.url", nativeJdbcUrl);
+        properties.put("clickhouse.native.user-raw-url", false);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final BalancedClickhouseDataSource source = context.getBean(BalancedClickhouseDataSource.class);
