@@ -1,7 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -15,10 +14,10 @@ import java.util.Map;
  * @since 23.3.2020
  */
 @Testcontainers
-class ClickHouseNativeFactoryTests extends Assertions {
+class ClickHouseNativeFactoryTests extends ClickhouseRunner {
 
     @Container
-    private final ClickHouseContainer container = new ClickHouseContainer();
+    private final ClickHouseContainer container = getContainer();
 
     @Test
     void nativeConnectionTestQuerySuccess() throws Exception {

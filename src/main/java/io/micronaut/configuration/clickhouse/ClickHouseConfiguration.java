@@ -3,8 +3,14 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.util.StringUtils;
+import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,6 +31,14 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
 
     private boolean createDatabaseIfNotExist = false;
     private int createDatabaseTimeoutInMillis = 10000;
+
+    private String url;
+    private String rawUrl;
+
+    /**
+     * User {@link #url} as provided without {@link #properties}
+     */
+    private boolean useRawUrl = true;
 
     /**
      * New props to init default values
@@ -65,17 +79,19 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     }
 
     /**
-     * @return JDBC connections url for ClickHouse driver
+     * @return connection url for ClickHouse
      */
-    public String getJDBC() {
-        return getJDBC(properties);
+    public String getUrl() {
+        if (StringUtils.isEmpty(url))
+            return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties());
+
+        return isUseRawUrl() ? rawUrl : url;
     }
 
-    /**
-     * @return HTTP url for ClickHouse server
-     */
-    public String getURL() {
-        return getURL(properties);
+    public URI getURI() {
+        return (properties.getSsl())
+                ? URI.create(String.format("https://%s:%s", properties.getHost(), properties.getPort()))
+                : URI.create(String.format("http://%s:%s", properties.getHost(), properties.getPort()));
     }
 
     public EnableConfiguration getHealth() {
@@ -90,10 +106,32 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         this.createDatabaseTimeoutInMillis = createDatabaseTimeoutInMillis;
     }
 
+    public void setUrl(String url) {
+        this.rawUrl = url;
+        try {
+            final List<String> urls = splitUrl(url);
+            final String firstJdbcUrl = urls.get(0);
+            final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
+            this.properties.merge(urlProperties);
+            final int propsStartFrom = url.indexOf("?");
+            this.url = (propsStartFrom == -1)
+                    ? url + getJdbcProperties(properties.asProperties())
+                    : url.substring(0, propsStartFrom) + getJdbcProperties(properties.asProperties());
+        } catch (URISyntaxException e) {
+            throw new ConfigurationException(e.getMessage());
+        }
+    }
+
+    public boolean isUseRawUrl() {
+        return useRawUrl;
+    }
+
+    public void setUseRawUrl(boolean useRawUrl) {
+        this.useRawUrl = useRawUrl;
+    }
+
     @Override
     public String toString() {
-        Properties properties = this.properties.asProperties();
-        properties.put("create-database-if-not-exist", createDatabaseIfNotExist);
-        return properties.toString();
+        return this.properties.asProperties().toString();
     }
 }

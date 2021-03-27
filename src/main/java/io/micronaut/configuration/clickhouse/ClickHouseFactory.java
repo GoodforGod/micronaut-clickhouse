@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.runtime.context.scope.Refreshable;
 import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickHouseDriver;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
@@ -23,11 +22,7 @@ import java.sql.SQLException;
 @Factory
 public class ClickHouseFactory {
 
-    private final ru.yandex.clickhouse.ClickHouseDriver driver;
-
-    public ClickHouseFactory() {
-        this.driver = new ClickHouseDriver();
-    }
+    private final ru.yandex.clickhouse.ClickHouseDriver driver = new ClickHouseDriver();
 
     public ru.yandex.clickhouse.ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
         try {
@@ -37,19 +32,18 @@ public class ClickHouseFactory {
         }
     }
 
-    @Refreshable(ClickHouseSettings.PREFIX)
+    @Named("clickhouse-singleton")
     @Bean(preDestroy = "close")
     @Singleton
-    @Primary
     public ru.yandex.clickhouse.ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
-        return getConnection(configuration.getJDBC(), configuration.getProperties());
+        return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 
-    @Refreshable(ClickHouseSettings.PREFIX)
+    @Primary
+    @Named("clickhouse")
     @Bean(preDestroy = "close")
     @Prototype
-    @Named("prototype")
     protected ru.yandex.clickhouse.ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
-        return getConnection(configuration);
+        return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 }

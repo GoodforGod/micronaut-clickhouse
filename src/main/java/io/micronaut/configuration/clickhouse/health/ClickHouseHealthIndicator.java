@@ -6,7 +6,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RxHttpClient;
-import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.reactivex.Flowable;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;
@@ -45,7 +43,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
 
     public ClickHouseHealthIndicator(ClickHouseConfiguration configuration) {
         try {
-            this.client = RxHttpClient.create(new URL(configuration.getURL()));
+            this.client = RxHttpClient.create(configuration.getURI().toURL());
             this.database = configuration.getProperties().getDatabase();
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e.getMessage());
@@ -71,20 +69,10 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        Map<String, Object> details = null;
-        if (e instanceof HttpClientResponseException) {
-            final int code = ((HttpClientResponseException) e).getStatus().getCode();
-            final Object body = ((HttpClientResponseException) e).getResponse().body();
-            details = (body == null)
-                    ? Map.of("httpCode", code)
-                    : Map.of("httpCode", code, "body", body);
-        }
-
         logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
-                .details(details)
                 .build();
     }
 
