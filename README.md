@@ -12,7 +12,7 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.0'
+    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.1'
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
@@ -300,6 +300,8 @@ TestContainers allows you to use integration tests against real database in all 
 check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Version History
+
+**2.2.1** - Micronaut updated to 2.5.4, official driver updated to 0.3.1
 
 **2.2.0** - Balanced official & native DataSource added, autocomplete for native configuration, url configuration for official & native driver, Singleton connection -> Prototype connection by default, Micronaut updated to 2.4.1, configuration improvements.
 
