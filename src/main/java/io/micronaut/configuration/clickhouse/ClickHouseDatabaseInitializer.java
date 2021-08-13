@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.annotation.Internal;
 import io.micronaut.runtime.exceptions.ApplicationStartupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 @Requires(property = ClickHouseSettings.PREFIX + ".create-database-if-not-exist", value = "true", defaultValue = "false")
 @Requires(beans = ClickHouseConfiguration.class)
 @Context
-@Internal
 public class ClickHouseDatabaseInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -52,7 +50,7 @@ public class ClickHouseDatabaseInitializer {
                 statement.execute("CREATE DATABASE IF NOT EXISTS " + database);
             }
         } catch (Exception e) {
-            throw new ApplicationStartupException("ClickHouse Database initialization failed due to: " + e.getMessage());
+            throw new ApplicationStartupException("ClickHouse Database initialization failed due to: " + e.getMessage(), e);
         }
 
         final long tookNanoTime = System.nanoTime() - setupStart;

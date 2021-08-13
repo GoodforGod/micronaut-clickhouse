@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;
 import static io.micronaut.health.HealthStatus.UP;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * A {@link HealthIndicator} for ClickHouse.
@@ -40,11 +40,13 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     private static final String NAME = "clickhouse";
     private final HttpClient client;
     private final String database;
+    private final ClickHouseHealthConfiguration healthConfiguration;
 
     public ClickHouseHealthIndicator(ClickHouseConfiguration configuration) {
         try {
             this.client = RxHttpClient.create(configuration.getURI().toURL());
             this.database = configuration.getProperties().getDatabase();
+            this.healthConfiguration = configuration.getHealth();
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e.getMessage());
         }
@@ -54,8 +56,8 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     public Publisher<HealthResult> getResult() {
         return Flowable.fromPublisher(client.retrieve("/ping"))
                 .map(this::buildUpReport)
-                .timeout(5, SECONDS)
-                .retry(3)
+                .timeout(healthConfiguration.getTimeoutInMillis(), MILLISECONDS)
+                .retry(healthConfiguration.getRetry())
                 .onErrorReturn(this::buildDownReport);
     }
 

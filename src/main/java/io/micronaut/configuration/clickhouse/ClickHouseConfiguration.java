@@ -1,5 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
+import io.micronaut.configuration.clickhouse.health.ClickHouseHealthConfiguration;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
@@ -26,8 +27,8 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     @ConfigurationBuilder(prefixes = "set")
     private final ClickHouseProperties properties;
 
-    @ConfigurationBuilder("health")
-    private final EnableConfiguration health = new EnableConfiguration(true);
+    @ConfigurationBuilder(prefixes = "set")
+    private final ClickHouseHealthConfiguration health;
 
     private boolean createDatabaseIfNotExist = false;
     private int createDatabaseTimeoutInMillis = 10000;
@@ -48,6 +49,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         this.properties.setHost(ClickHouseSettings.DEFAULT_HOST);
         this.properties.setPort(ClickHouseSettings.DEFAULT_PORT);
         this.properties.setDatabase(ClickHouseSettings.DEFAULT_DATABASE);
+        this.health = new ClickHouseHealthConfiguration();
     }
 
     /**
@@ -57,6 +59,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
      */
     public ClickHouseConfiguration(ClickHouseProperties properties) {
         this.properties = new ClickHouseProperties(properties);
+        this.health = new ClickHouseHealthConfiguration();
     }
 
     /**
@@ -94,7 +97,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
                 : URI.create(String.format("http://%s:%s", properties.getHost(), properties.getPort()));
     }
 
-    public EnableConfiguration getHealth() {
+    public ClickHouseHealthConfiguration getHealth() {
         return health;
     }
 
