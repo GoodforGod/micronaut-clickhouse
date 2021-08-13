@@ -12,7 +12,7 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.1'
+    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.2'
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.2</version>
 </dependency>
 ```
 
@@ -284,12 +284,14 @@ Example of ClickHouse health:
 
 Where *database* name service is connected same as [configuration says](#Configuration).
 
-You can explicitly *turn off* health check.
+You can explicitly *turn off* health check or configure it.
 
 ```yaml
 clickhouse:
   health:
-    enabled: false      # default - true 
+    enabled: false            # default - true 
+    timeout-in-millis: 10000  # default - 10000
+    retry: 2                  # default - 2
 ```
 
 ## Testing
@@ -299,22 +301,6 @@ For testing purposes you can use [ClickHouse TestContainer library](https://www.
 TestContainers allows you to use integration tests against real database in all docker friendly environments, 
 check here for [TestContainers](https://www.testcontainers.org/).
 
-## Version History
-
-**2.2.1** - Micronaut updated to 2.5.4, official driver updated to 0.3.1
-
-**2.2.0** - Balanced official & native DataSource added, autocomplete for native configuration, url configuration for official & native driver, Singleton connection -> Prototype connection by default, Micronaut updated to 2.4.1, configuration improvements.
-
-**2.1.0** - Java updated to 11, Micronaut updated to 2.1.1.
-
-**2.0.0** - Micronaut 2 support, database init timeout property added, dependency updated.
-
-**1.0.2** - Dependencies updated.
-
-**1.0.1** - Added all native driver settings for configuration, fixed native driver inject issues.
-
-**1.0.0** - Initial version, [official driver](https://github.com/ClickHouse/clickhouse-jdbc) and [native driver](https://github.com/housepower/ClickHouse-Native-JDBC) drivers support, database initialization, health check.
-
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.

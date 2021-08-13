@@ -26,9 +26,6 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     @ConfigurationBuilder(prefixes = "set")
     private final ClickHouseProperties properties;
 
-    @ConfigurationBuilder("health")
-    private final EnableConfiguration health = new EnableConfiguration(true);
-
     private boolean createDatabaseIfNotExist = false;
     private int createDatabaseTimeoutInMillis = 10000;
 
@@ -92,10 +89,6 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         return (properties.getSsl())
                 ? URI.create(String.format("https://%s:%s", properties.getHost(), properties.getPort()))
                 : URI.create(String.format("http://%s:%s", properties.getHost(), properties.getPort()));
-    }
-
-    public EnableConfiguration getHealth() {
-        return health;
     }
 
     public int getCreateDatabaseTimeoutInMillis() {

@@ -1,6 +1,9 @@
 package io.micronaut.configuration.clickhouse;
 
+import io.micronaut.configuration.clickhouse.health.ClickHouseHealthConfiguration;
+import io.micronaut.configuration.clickhouse.health.ClickHouseHealthIndicator;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.exceptions.ConfigurationException;
 import org.junit.jupiter.api.Test;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
@@ -21,12 +24,15 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConfiguration configuration = context.getBean(ClickHouseConfiguration.class);
+        final ClickHouseHealthConfiguration healthConfiguration = context.getBean(ClickHouseHealthConfiguration.class);
         final ClickHouseProperties props = configuration.getProperties();
         assertNotNull(configuration.toString());
         assertFalse(configuration.isCreateDatabaseIfNotExist());
         assertEquals(10000, configuration.getCreateDatabaseTimeoutInMillis());
-        assertNotNull(configuration.getHealth());
-        assertTrue(configuration.getHealth().isEnabled());
+        assertNotNull(healthConfiguration);
+        assertTrue(healthConfiguration.isEnabled());
+        assertEquals(2, healthConfiguration.getRetry());
+        assertEquals(10000, healthConfiguration.getTimeoutInMillis());
 
         assertEquals(9999, props.getPort());
         assertEquals("127.0.0.1", props.getHost());
@@ -55,5 +61,39 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         assertEquals("localhost", props.getHost());
         assertEquals("custom", props.getDatabase());
         assertTrue(props.isAsync());
+    }
+
+    @Test
+    void createHealthRetryInvalid() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.database", "custom");
+        properties.put("clickhouse.host", "localhost");
+        properties.put("clickhouse.health.timeout-in-millis", 100);
+        properties.put("clickhouse.health.retry", -1);
+
+        try {
+            ApplicationContext context = ApplicationContext.run(properties);
+            context.getBean(ClickHouseHealthIndicator.class);
+            fail("Should bot happen");
+        } catch (Exception e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+        }
+    }
+
+    @Test
+    void createHealthTimeoutInvalid() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.database", "custom");
+        properties.put("clickhouse.host", "localhost");
+        properties.put("clickhouse.health.timeout-in-millis", -100);
+        properties.put("clickhouse.health.retry", 1);
+
+        try {
+            ApplicationContext context = ApplicationContext.run(properties);
+            context.getBean(ClickHouseHealthIndicator.class);
+            fail("Should bot happen");
+        } catch (Exception e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+        }
     }
 }
