@@ -13,6 +13,7 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -42,11 +43,13 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     private final String database;
     private final ClickHouseHealthConfiguration healthConfiguration;
 
-    public ClickHouseHealthIndicator(ClickHouseConfiguration configuration) {
+    @Inject
+    public ClickHouseHealthIndicator(ClickHouseConfiguration configuration,
+                                     ClickHouseHealthConfiguration healthConfiguration) {
         try {
             this.client = RxHttpClient.create(configuration.getURI().toURL());
             this.database = configuration.getProperties().getDatabase();
-            this.healthConfiguration = configuration.getHealth();
+            this.healthConfiguration = healthConfiguration;
         } catch (MalformedURLException e) {
             throw new ConfigurationException(e.getMessage());
         }

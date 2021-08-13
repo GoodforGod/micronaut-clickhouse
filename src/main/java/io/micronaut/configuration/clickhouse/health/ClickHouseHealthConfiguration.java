@@ -1,5 +1,8 @@
 package io.micronaut.configuration.clickhouse.health;
 
+import io.micronaut.configuration.clickhouse.ClickHouseSettings;
+import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 
 /**
@@ -8,6 +11,8 @@ import io.micronaut.context.exceptions.ConfigurationException;
  * @author Anton Kurako (GoodforGod)
  * @since 13.08.2021
  */
+@Requires(property = ClickHouseSettings.PREFIX)
+@ConfigurationProperties(ClickHouseSettings.PREFIX + ".health")
 public class ClickHouseHealthConfiguration {
 
     private boolean enabled = true;
