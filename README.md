@@ -25,12 +25,6 @@ dependencies {
 </dependency>
 ```
 
-Starting from version *2.0.0* library ships for *Micronaut 2*.
-
-Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
-
-Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
-
 ## Configuration
 
 Includes a configuration to automatically configure official [ClickHouse Java drive](https://github.com/ClickHouse/clickhouse-jdbc)
@@ -300,6 +294,14 @@ For testing purposes you can use [ClickHouse TestContainer library](https://www.
 
 TestContainers allows you to use integration tests against real database in all docker friendly environments, 
 check here for [TestContainers](https://www.testcontainers.org/).
+
+## Micronaut Compatability
+
+Starting from version *2.0.0* library ships for *Micronaut 2*.
+
+Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
+
+Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
 
 ## License
 
