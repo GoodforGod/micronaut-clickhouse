@@ -10,6 +10,7 @@ import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,7 +28,7 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     private final ClickHouseProperties properties;
 
     private boolean createDatabaseIfNotExist = false;
-    private int createDatabaseTimeoutInMillis = 10000;
+    private Duration createDatabaseTimeout = Duration.ofSeconds(10);
 
     private String url;
     private String rawUrl;
@@ -91,12 +92,16 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
                 : URI.create(String.format("http://%s:%s", properties.getHost(), properties.getPort()));
     }
 
-    public int getCreateDatabaseTimeoutInMillis() {
-        return createDatabaseTimeoutInMillis;
+    public Duration getCreateDatabaseTimeout() {
+        return createDatabaseTimeout;
     }
 
-    public void setCreateDatabaseTimeoutInMillis(int createDatabaseTimeoutInMillis) {
-        this.createDatabaseTimeoutInMillis = createDatabaseTimeoutInMillis;
+    public void setCreateDatabaseTimeout(Duration createDatabaseTimeout) {
+        if (createDatabaseTimeout == null)
+            return;
+        if (createDatabaseTimeout.isNegative())
+            throw new ConfigurationException("CreateDatabaseTimeout can not be less than 0");
+        this.createDatabaseTimeout = createDatabaseTimeout;
     }
 
     public void setUrl(String url) {

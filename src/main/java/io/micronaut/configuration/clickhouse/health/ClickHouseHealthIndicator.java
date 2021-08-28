@@ -5,22 +5,20 @@ import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
-import io.reactivex.Flowable;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.util.Map;
 
 import static io.micronaut.health.HealthStatus.DOWN;
 import static io.micronaut.health.HealthStatus.UP;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * A {@link HealthIndicator} for ClickHouse.
@@ -47,7 +45,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     public ClickHouseHealthIndicator(ClickHouseConfiguration configuration,
                                      ClickHouseHealthConfiguration healthConfiguration) {
         try {
-            this.client = RxHttpClient.create(configuration.getURI().toURL());
+            this.client = HttpClient.create(configuration.getURI().toURL());
             this.database = configuration.getProperties().getDatabase();
             this.healthConfiguration = healthConfiguration;
         } catch (MalformedURLException e) {
@@ -57,11 +55,11 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
 
     @Override
     public Publisher<HealthResult> getResult() {
-        return Flowable.fromPublisher(client.retrieve("/ping"))
+        return Flux.from(client.retrieve("/ping"))
                 .map(this::buildUpReport)
-                .timeout(healthConfiguration.getTimeoutInMillis(), MILLISECONDS)
+                .timeout(healthConfiguration.getTimeout())
                 .retry(healthConfiguration.getRetry())
-                .onErrorReturn(this::buildDownReport);
+                .onErrorResume(e -> Flux.just(buildDownReport(e)));
     }
 
     private HealthResult buildUpReport(String response) {
