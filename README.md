@@ -12,7 +12,7 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:2.2.2'
+    compile 'com.github.goodforgod:micronaut-clickhouse:3.0.0'
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>2.2.2</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
@@ -249,7 +249,7 @@ on startup you can set it via property.
 
 ```yaml
 clickhouse:
-  create-database-timeout-in-millis: 500 # default - 10000
+  create-database-timeout: 10000ms # default - 10000ms
 ```
 
 ## Health Check
@@ -284,7 +284,7 @@ You can explicitly *turn off* health check or configure it.
 clickhouse:
   health:
     enabled: false            # default - true 
-    timeout-in-millis: 10000  # default - 10000
+    timeout: 10000ms          # default - 10000ms
     retry: 2                  # default - 2
 ```
 
@@ -297,9 +297,11 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Micronaut Compatability
 
-Starting from version *2.0.0* library ships for *Micronaut 2*.
+Starting from version *3.0.0* library ships for *Micronaut 3*.
 
 Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
+
+Starting from version *2.0.0* library ships for *Micronaut 2*.
 
 Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
 

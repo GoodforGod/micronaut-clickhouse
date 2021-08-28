@@ -5,6 +5,8 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 
+import java.time.Duration;
+
 /**
  * Please Add Description Here.
  *
@@ -16,7 +18,7 @@ import io.micronaut.context.exceptions.ConfigurationException;
 public class ClickHouseHealthConfiguration {
 
     private boolean enabled = true;
-    private long timeoutInMillis = 10000;
+    private Duration timeout = Duration.ofSeconds(10);
     private int retry = 2;
 
     public boolean isEnabled() {
@@ -27,14 +29,14 @@ public class ClickHouseHealthConfiguration {
         this.enabled = enabled;
     }
 
-    public long getTimeoutInMillis() {
-        return timeoutInMillis;
+    public Duration getTimeout() {
+        return timeout;
     }
 
-    public void setTimeoutInMillis(long timeoutInMillis) {
-        if (timeoutInMillis < 0)
+    public void setTimeout(Duration timeout) {
+        if (timeout == null || timeout.isNegative())
             throw new ConfigurationException("Timeout for health can not be less than 0");
-        this.timeoutInMillis = timeoutInMillis;
+        this.timeout = timeout;
     }
 
     public int getRetry() {

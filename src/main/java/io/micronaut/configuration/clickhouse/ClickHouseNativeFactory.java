@@ -5,8 +5,8 @@ import com.github.housepower.jdbc.settings.ClickHouseConfig;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.sql.SQLException;
 
 /**

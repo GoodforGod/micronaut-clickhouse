@@ -4,15 +4,15 @@ import io.micronaut.configuration.clickhouse.ClickhouseRunner;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.health.HealthStatus;
 import io.micronaut.management.health.indicator.HealthResult;
-import io.reactivex.Flowable;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -32,9 +32,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
 
-        final HealthResult result = Flowable.fromPublisher(indicator.getResult()).timeout(60, TimeUnit.SECONDS)
-                .firstElement()
-                .blockingGet();
+        final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.UP, result.getStatus());
         assertEquals("clickhouse", result.getName());
         assertNotNull(result.getDetails());
@@ -49,9 +47,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
 
-        final HealthResult result = Flowable.fromPublisher(indicator.getResult()).timeout(60, TimeUnit.SECONDS)
-                .firstElement()
-                .blockingGet();
+        final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
         assertEquals("clickhouse", result.getName());
         assertTrue(result.getDetails() instanceof Map);
@@ -68,9 +64,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
 
-        final HealthResult result = Flowable.fromPublisher(indicator.getResult()).timeout(60, TimeUnit.SECONDS)
-                .firstElement()
-                .blockingGet();
+        final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
         assertEquals("clickhouse", result.getName());
     }

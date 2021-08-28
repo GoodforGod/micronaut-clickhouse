@@ -6,8 +6,8 @@ import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickHouseDriver;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.sql.SQLException;
 
 /**

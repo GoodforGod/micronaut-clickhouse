@@ -11,7 +11,9 @@ import ru.yandex.clickhouse.ClickHouseStatement;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
+
+import java.time.Duration;
 
 /**
  * ClickHouse database initializer activated by
@@ -31,7 +33,7 @@ public class ClickHouseDatabaseInitializer {
     @Inject
     protected void setupDatabase(ClickHouseConfiguration configuration) {
         final String database = configuration.getProperties().getDatabase();
-        final int timeout = configuration.getCreateDatabaseTimeoutInMillis();
+        final Duration timeout = configuration.getCreateDatabaseTimeout();
         if (ClickHouseSettings.DEFAULT_DATABASE.equals(database)) {
             logger.debug("ClickHouse is configured to use 'default' Database, skipping initialization");
             return;
@@ -39,8 +41,8 @@ public class ClickHouseDatabaseInitializer {
 
         final ClickHouseProperties properties = new ClickHouseProperties(configuration.getProperties());
         properties.setDatabase(ClickHouseSettings.DEFAULT_DATABASE);
-        properties.setConnectionTimeout(timeout);
-        properties.setDataTransferTimeout(timeout);
+        properties.setConnectionTimeout(Math.toIntExact(timeout.toMillis()));
+        properties.setDataTransferTimeout(Math.toIntExact(timeout.toMillis()));
         final ClickHouseConfiguration newConfiguration = new ClickHouseConfiguration(properties);
 
         logger.debug("ClickHouse Database '{}' initialization starting...", database);
