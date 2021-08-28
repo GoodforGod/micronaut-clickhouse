@@ -94,7 +94,7 @@ class ClickHouseDatabaseInitializationTests extends ClickhouseRunner {
         properties.put("clickhouse.port", 7457);
         properties.put("clickhouse.database", "customos");
         properties.put("clickhouse.create-database-if-not-exist", true);
-        properties.put("clickhouse.create-database-timeout-in-millis", 1);
+        properties.put("clickhouse.create-database-timeout", "1ms");
 
         try {
             ApplicationContext.run(properties);
@@ -110,11 +110,10 @@ class ClickHouseDatabaseInitializationTests extends ClickhouseRunner {
         properties.put("clickhouse.port", 7459);
         properties.put("clickhouse.socket-timeout", 1000);
         properties.put("clickhouse.connection-timeout", 1000);
-        properties.put("clickhouse.heath.timeout-in-millis", 1000);
         properties.put("clickhouse.heath.retry", 1);
         properties.put("clickhouse.database", "customos");
         properties.put("clickhouse.create-database-if-not-exist", true);
-        properties.put("clickhouse.create-database-timeout-in-millis", 10000);
+        properties.put("clickhouse.create-database-timeout", "10000ms");
 
         try {
             ApplicationContext.run(properties);

@@ -34,7 +34,9 @@ public class ClickHouseHealthConfiguration {
     }
 
     public void setTimeout(Duration timeout) {
-        if (timeout == null || timeout.isNegative())
+        if (timeout == null)
+            return;
+        if (timeout.isNegative())
             throw new ConfigurationException("Timeout for health can not be less than 0");
         this.timeout = timeout;
     }

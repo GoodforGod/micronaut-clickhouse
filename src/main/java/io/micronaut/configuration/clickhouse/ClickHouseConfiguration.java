@@ -97,7 +97,9 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
     }
 
     public void setCreateDatabaseTimeout(Duration createDatabaseTimeout) {
-        if (createDatabaseTimeout == null || createDatabaseTimeout.isNegative())
+        if (createDatabaseTimeout == null)
+            return;
+        if (createDatabaseTimeout.isNegative())
             throw new ConfigurationException("CreateDatabaseTimeout can not be less than 0");
         this.createDatabaseTimeout = createDatabaseTimeout;
     }

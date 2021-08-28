@@ -52,6 +52,8 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         properties.put("clickhouse.host", "localhost");
         properties.put("clickhouse.port", 9001);
         properties.put("clickhouse.async", true);
+        properties.put("clickhouse.health.timeout", "100s");
+        properties.put("clickhouse.health.retry", 1);
 
         final ApplicationContext context = ApplicationContext.run(properties);
 
@@ -72,8 +74,7 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         properties.put("clickhouse.health.timeout", "100s");
         properties.put("clickhouse.health.retry", -1);
 
-        try {
-            ApplicationContext context = ApplicationContext.run(properties);
+        try (ApplicationContext context = ApplicationContext.run(properties);) {
             context.getBean(ClickHouseHealthIndicator.class);
             fail("Should bot happen");
         } catch (Exception e) {
@@ -89,12 +90,52 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         properties.put("clickhouse.health.timeout", "-100s");
         properties.put("clickhouse.health.retry", 1);
 
-        try {
-            ApplicationContext context = ApplicationContext.run(properties);
+        try (ApplicationContext context = ApplicationContext.run(properties);) {
             context.getBean(ClickHouseHealthIndicator.class);
             fail("Should bot happen");
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof ConfigurationException);
         }
+    }
+
+    @Test
+    void createDatabaseTimeoutInvalid() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.database", "custom");
+        properties.put("clickhouse.host", "localhost");
+        properties.put("clickhouse.create-database-timeout", "-10ms");
+
+        try (ApplicationContext context = ApplicationContext.run(properties);) {
+            context.getBean(ClickHouseConfiguration.class);
+            fail("Should bot happen");
+        } catch (Exception e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+        }
+    }
+
+    @Test
+    void createHealthTimeoutSkipped() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.database", "custom");
+        properties.put("clickhouse.host", "localhost");
+        properties.put("clickhouse.health.timeout", null);
+
+        final ApplicationContext context = ApplicationContext.run(properties);
+        final ClickHouseHealthConfiguration configuration = context.getBean(ClickHouseHealthConfiguration.class);
+        configuration.setTimeout(null);
+        assertEquals(Duration.ofSeconds(10), configuration.getTimeout());
+    }
+
+    @Test
+    void createDatabaseTimeoutSkipped() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.database", "custom");
+        properties.put("clickhouse.host", "localhost");
+        properties.put("clickhouse.create-database-timeout", "1ms");
+
+        final ApplicationContext context = ApplicationContext.run(properties);
+        final ClickHouseConfiguration configuration = context.getBean(ClickHouseConfiguration.class);
+        configuration.setCreateDatabaseTimeout(null);
+        assertEquals(Duration.ofSeconds(10), configuration.getCreateDatabaseTimeout());
     }
 }
