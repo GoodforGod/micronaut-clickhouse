@@ -135,6 +135,6 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseConfiguration configuration = context.getBean(ClickHouseConfiguration.class);
         configuration.setCreateDatabaseTimeout(null);
-        assertEquals(Duration.ofSeconds(10), configuration.getCreateDatabaseTimeout());
+        assertEquals(Duration.ofMillis(1), configuration.getCreateDatabaseTimeout());
     }
 }
