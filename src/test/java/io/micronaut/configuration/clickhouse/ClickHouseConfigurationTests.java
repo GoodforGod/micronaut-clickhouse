@@ -118,7 +118,6 @@ class ClickHouseConfigurationTests extends ClickhouseRunner {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.database", "custom");
         properties.put("clickhouse.host", "localhost");
-        properties.put("clickhouse.health.timeout", null);
 
         final ApplicationContext context = ApplicationContext.run(properties);
         final ClickHouseHealthConfiguration configuration = context.getBean(ClickHouseHealthConfiguration.class);
