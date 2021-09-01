@@ -3,10 +3,9 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
-import ru.yandex.clickhouse.BalancedClickhouseDataSource;
-
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import ru.yandex.clickhouse.BalancedClickhouseDataSource;
 
 /**
  * @author Anton Kurako (GoodforGod)

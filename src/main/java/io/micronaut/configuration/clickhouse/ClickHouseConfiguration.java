@@ -5,14 +5,13 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.util.StringUtils;
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
+import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
+import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * ClickHouse Official Driver configuration class.

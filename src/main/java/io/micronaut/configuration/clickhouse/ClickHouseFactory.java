@@ -2,13 +2,12 @@ package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
-import ru.yandex.clickhouse.ClickHouseConnection;
-import ru.yandex.clickhouse.ClickHouseDriver;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.sql.SQLException;
+import ru.yandex.clickhouse.ClickHouseConnection;
+import ru.yandex.clickhouse.ClickHouseDriver;
+import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * Default factory for creating Official ClickHouse client

@@ -2,7 +2,6 @@ package io.micronaut.configuration.clickhouse;
 
 import com.github.housepower.jdbc.serde.SettingType;
 import com.github.housepower.jdbc.settings.SettingKey;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;

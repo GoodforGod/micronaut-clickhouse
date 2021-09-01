@@ -1,6 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
+import static ru.yandex.clickhouse.ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +9,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static ru.yandex.clickhouse.ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX;
+import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
 
 /**
  * Abstract ClickHouse configuration class.

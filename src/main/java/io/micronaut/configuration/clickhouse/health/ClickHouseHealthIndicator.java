@@ -1,5 +1,8 @@
 package io.micronaut.configuration.clickhouse.health;
 
+import static io.micronaut.health.HealthStatus.DOWN;
+import static io.micronaut.health.HealthStatus.UP;
+
 import io.micronaut.configuration.clickhouse.ClickHouseConfiguration;
 import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
@@ -9,16 +12,12 @@ import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.net.MalformedURLException;
+import java.util.Map;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
-
-import java.net.MalformedURLException;
-import java.util.Map;
-
-import static io.micronaut.health.HealthStatus.DOWN;
-import static io.micronaut.health.HealthStatus.UP;
 
 /**
  * A {@link HealthIndicator} for ClickHouse.
