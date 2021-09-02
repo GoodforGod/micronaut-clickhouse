@@ -36,12 +36,12 @@ sonarqube {
 }
 
 micronaut {
-    version "3.0.0"
+    version("3.0.0")
     processing {
-        incremental true
-        module project.name
-        group project.group
-        annotations "io.micronaut.configuration.clickhouse.*"
+        incremental(true)
+        module(project.name)
+        group(project.group)
+        annotations("io.micronaut.configuration.clickhouse.*")
     }
 }
 
