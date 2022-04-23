@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-inject-java"
 
-    api "ru.yandex.clickhouse:clickhouse-jdbc:0.3.2-patch8"
+    api "com.clickhouse:clickhouse-jdbc:0.3.2-patch8"
     api "com.github.housepower:clickhouse-native-jdbc:2.6.5"
 
     implementation "io.micronaut:micronaut-http-client"

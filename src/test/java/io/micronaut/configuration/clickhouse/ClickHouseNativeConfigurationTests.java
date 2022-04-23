@@ -1,6 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.settings.SettingKey;
+import com.github.housepower.settings.SettingKey;
 import io.micronaut.context.ApplicationContext;
 import java.util.HashMap;
 import java.util.Map;

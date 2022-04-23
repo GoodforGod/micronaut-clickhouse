@@ -1,7 +1,7 @@
 package io.micronaut.configuration.clickhouse;
 
 import com.github.housepower.jdbc.ClickHouseConnection;
-import com.github.housepower.jdbc.settings.ClickHouseConfig;
+import com.github.housepower.settings.ClickHouseConfig;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
 import jakarta.inject.Named;

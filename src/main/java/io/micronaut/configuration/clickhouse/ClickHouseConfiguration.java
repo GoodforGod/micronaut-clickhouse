@@ -82,7 +82,9 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         if (StringUtils.isEmpty(url))
             return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), properties.asProperties());
 
-        return isUseRawUrl() ? rawUrl : url;
+        return isUseRawUrl()
+                ? rawUrl
+                : url;
     }
 
     public URI getURI() {
@@ -108,7 +110,8 @@ public class ClickHouseConfiguration extends AbstractClickHouseConfiguration {
         try {
             final List<String> urls = splitUrl(url);
             final String firstJdbcUrl = urls.get(0);
-            final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl, this.properties.asProperties());
+            final ClickHouseProperties urlProperties = ClickhouseJdbcUrlParser.parse(firstJdbcUrl,
+                    this.properties.asProperties());
             this.properties.merge(urlProperties);
             final int propsStartFrom = url.indexOf("?");
             this.url = (propsStartFrom == -1)

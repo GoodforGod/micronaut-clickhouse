@@ -1,7 +1,8 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.serde.SettingType;
-import com.github.housepower.jdbc.settings.SettingKey;
+import com.github.housepower.serde.SettingType;
+import com.github.housepower.settings.SettingKey;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;
@@ -779,7 +780,7 @@ public class ClickhouseNativeProperties {
     private Boolean tcpKeepAlive;
     private Duration queryTimeout;
 
-    private final Map<String, Object> additionalSettings = new HashMap<>();
+    private final Map<String, Serializable> additionalSettings = new HashMap<>();
 
     // <editor-fold desc="GetterSetters">
     public void setMinCompressBlockSize(Integer minCompressBlockSize) {
@@ -1046,7 +1047,8 @@ public class ClickhouseNativeProperties {
         this.httpZlibCompressionLevel = httpZlibCompressionLevel;
     }
 
-    public void setHttpNativeCompressionDisableChecksummingOnDecompress(Boolean httpNativeCompressionDisableChecksummingOnDecompress) {
+    public void
+            setHttpNativeCompressionDisableChecksummingOnDecompress(Boolean httpNativeCompressionDisableChecksummingOnDecompress) {
         this.httpNativeCompressionDisableChecksummingOnDecompress = httpNativeCompressionDisableChecksummingOnDecompress;
     }
 
@@ -1871,25 +1873,29 @@ public class ClickhouseNativeProperties {
     }
     // </editor-fold>
 
-    public Map<String, Object> getAdditionalSettings() {
+    public Map<String, Serializable> getAdditionalSettings() {
         return additionalSettings;
     }
 
-    public void addSettings(SettingKey key, Object value) {
+    public void addSettings(SettingKey key, Serializable value) {
         addSettings(key.name(), value);
     }
 
-    public void addSettings(String key, Object value) {
+    public void addSettings(String key, Serializable value) {
         if (value != null)
             this.additionalSettings.put(key, value);
     }
 
-    public void withSettings(Map<SettingKey, Object> settings) {
+    public void withSettings(Map<SettingKey, Serializable> settings) {
         settings.forEach(this::addSettings);
     }
 
     public void withProperties(Properties properties) {
-        properties.forEach((k, v) -> addSettings(String.valueOf(k), v));
+        properties.forEach((k, v) -> {
+            if (v instanceof Serializable) {
+                addSettings(String.valueOf(k), ((Serializable) v));
+            }
+        });
     }
 
     public Properties asProperties() {
@@ -1908,8 +1914,8 @@ public class ClickhouseNativeProperties {
         return properties;
     }
 
-    public Map<SettingKey, Object> asSettings() {
-        final Map<SettingKey, Object> settings = new HashMap<>();
+    public Map<SettingKey, Serializable> asSettings() {
+        final Map<SettingKey, Serializable> settings = new HashMap<>();
 
         setSetting(settings, SettingKey.min_compress_block_size, minCompressBlockSize);
         setSetting(settings, SettingKey.max_compress_block_size, maxCompressBlockSize);
@@ -1955,7 +1961,8 @@ public class ClickhouseNativeProperties {
         setSetting(settings, SettingKey.merge_tree_max_rows_to_use_cache, mergeTreeMaxRowsToUseCache);
         setSetting(settings, SettingKey.merge_tree_uniform_read_distribution, mergeTreeUniformReadDistribution);
         setSetting(settings, SettingKey.mysql_max_rows_to_insert, mysqlMaxRowsToInsert);
-        setSetting(settings, SettingKey.optimize_min_equality_disjunction_chain_length, optimizeMinEqualityDisjunctionChainLength);
+        setSetting(settings, SettingKey.optimize_min_equality_disjunction_chain_length,
+                optimizeMinEqualityDisjunctionChainLength);
         setSetting(settings, SettingKey.min_bytes_to_use_direct_io, minBytesToUseDirectIo);
         setSetting(settings, SettingKey.force_index_by_date, forceIndexByDate);
         setSetting(settings, SettingKey.force_primary_key, forcePrimaryKey);
@@ -1995,7 +2002,8 @@ public class ClickhouseNativeProperties {
         setSetting(settings, SettingKey.input_format_allow_errors_ratio, inputFormatAllowErrorsRatio);
         setSetting(settings, SettingKey.join_use_nulls, joinUseNulls);
         setSetting(settings, SettingKey.max_replica_delay_for_distributed_queries, maxReplicaDelayForDistributedQueries);
-        setSetting(settings, SettingKey.fallback_to_stale_replicas_for_distributed_queries, fallbackToStaleReplicasForDistributedQueries);
+        setSetting(settings, SettingKey.fallback_to_stale_replicas_for_distributed_queries,
+                fallbackToStaleReplicasForDistributedQueries);
         setSetting(settings, SettingKey.preferred_max_column_in_block_size_bytes, preferredMaxColumnInBlockSizeBytes);
         setSetting(settings, SettingKey.insert_distributed_sync, insertDistributedSync);
         setSetting(settings, SettingKey.insert_distributed_timeout, insertDistributedTimeout);
@@ -2062,9 +2070,11 @@ public class ClickhouseNativeProperties {
         return settings;
     }
 
-    private void setSettingAsDuration(Map<SettingKey, Object> settings, SettingKey key) {
+    private void setSettingAsDuration(Map<SettingKey, Serializable> settings, SettingKey key) {
         settings.computeIfPresent(key, (k, v) -> {
-            v = (v instanceof Integer) ? ((Integer) v).longValue() : v;
+            v = (v instanceof Integer)
+                    ? ((Integer) v).longValue()
+                    : v;
             if (v instanceof Long) {
                 if (k.type().equals(SettingType.Milliseconds)) {
                     return Duration.ofMillis(((Long) v));
@@ -2077,7 +2087,7 @@ public class ClickhouseNativeProperties {
         });
     }
 
-    private void setSetting(Map<SettingKey, Object> settings, SettingKey key, Object value) {
+    private void setSetting(Map<SettingKey, Serializable> settings, SettingKey key, Serializable value) {
         if (value != null) {
             if (value instanceof Duration) {
                 settings.put(key, ((Duration) value).toMillis());

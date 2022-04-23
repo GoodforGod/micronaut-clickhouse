@@ -6,35 +6,37 @@ package io.micronaut.configuration.clickhouse;
  * @author Anton Kurako (GoodforGod)
  * @since 11.3.2020
  */
-public interface ClickHouseSettings {
+public final class ClickHouseSettings {
+
+    private ClickHouseSettings() {}
 
     /**
      * Prefix to use for all ClickHouse settings.
      */
-    String PREFIX = "clickhouse";
+    public static final String PREFIX = "clickhouse";
 
     /**
      * Prefix to use for Native Driver ClickHouse settings.
      */
-    String PREFIX_NATIVE = PREFIX + ".native";
+    public static final String PREFIX_NATIVE = PREFIX + ".native";
 
     /**
      * ClickHouse default HOST
      */
-    String DEFAULT_HOST = "127.0.0.1";
+    public static final String DEFAULT_HOST = "127.0.0.1";
 
     /**
      * ClickHouse default http connection PORT
      */
-    int DEFAULT_PORT = 8123;
+    public static final int DEFAULT_PORT = 8123;
 
     /**
      * ClickHouse default native connection PORT
      */
-    int DEFAULT_NATIVE_PORT = 9000;
+    public static final int DEFAULT_NATIVE_PORT = 9000;
 
     /**
      * ClickHouse default DATABASE
      */
-    String DEFAULT_DATABASE = "default";
+    public static final String DEFAULT_DATABASE = "default";
 }

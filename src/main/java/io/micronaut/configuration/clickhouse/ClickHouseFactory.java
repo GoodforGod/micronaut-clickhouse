@@ -17,13 +17,13 @@ import ru.yandex.clickhouse.settings.ClickHouseProperties;
  * @since 11.3.2020
  */
 @Requires(beans = ClickHouseConfiguration.class)
-@Requires(classes = ru.yandex.clickhouse.ClickHouseConnection.class)
+@Requires(classes = ClickHouseConnection.class)
 @Factory
 public class ClickHouseFactory {
 
-    private final ru.yandex.clickhouse.ClickHouseDriver driver = new ClickHouseDriver();
+    private final ClickHouseDriver driver = new ClickHouseDriver();
 
-    public ru.yandex.clickhouse.ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
+    public ClickHouseConnection getConnection(String jdbcUrl, ClickHouseProperties properties) {
         try {
             return driver.connect(jdbcUrl, properties);
         } catch (SQLException e) {
@@ -34,7 +34,7 @@ public class ClickHouseFactory {
     @Named("clickhouse-singleton")
     @Bean(preDestroy = "close")
     @Singleton
-    public ru.yandex.clickhouse.ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
+    public ClickHouseConnection getConnection(ClickHouseConfiguration configuration) {
         return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 
@@ -42,7 +42,7 @@ public class ClickHouseFactory {
     @Named("clickhouse")
     @Bean(preDestroy = "close")
     @Prototype
-    protected ru.yandex.clickhouse.ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
+    protected ClickHouseConnection getPrototypeConnection(ClickHouseConfiguration configuration) {
         return getConnection(configuration.getUrl(), configuration.getProperties());
     }
 }

@@ -12,14 +12,14 @@ import ru.yandex.clickhouse.BalancedClickhouseDataSource;
  * @since 21.3.2021
  */
 @Requires(beans = ClickHouseConfiguration.class)
-@Requires(classes = ru.yandex.clickhouse.BalancedClickhouseDataSource.class)
+@Requires(classes = BalancedClickhouseDataSource.class)
 @Factory
 public class ClickHouseBalancedFactory {
 
     @Named("clickhouse")
     @Bean
     @Singleton
-    public ru.yandex.clickhouse.BalancedClickhouseDataSource getConnection(ClickHouseConfiguration configuration) {
+    public BalancedClickhouseDataSource getConnection(ClickHouseConfiguration configuration) {
         final String jdbc = configuration.getUrl();
         return new BalancedClickhouseDataSource(jdbc);
     }
