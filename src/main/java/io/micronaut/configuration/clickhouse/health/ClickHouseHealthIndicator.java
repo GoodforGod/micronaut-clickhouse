@@ -71,7 +71,7 @@ public class ClickHouseHealthIndicator implements HealthIndicator {
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        logger.debug("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
+        logger.warn("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
