@@ -2,9 +2,9 @@ plugins {
     id "jacoco"
     id "maven-publish"
 
-    id "io.micronaut.library" version "2.0.3"
     id "org.sonarqube" version "3.3"
-    id "com.diffplug.spotless" version "5.14.3"
+    id "com.diffplug.spotless" version "6.1.0"
+    id "io.micronaut.library" version "3.3.2"
 }
 
 repositories {
@@ -15,33 +15,15 @@ repositories {
 group = groupId
 version = artifactVersion
 
-sourceCompatibility = 11
-targetCompatibility = 11
-
-spotless {
-    java {
-        encoding("UTF-8")
-        importOrder()
-        removeUnusedImports()
-        eclipse().configFile("${projectDir}/config/codestyle.xml")
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.organization", "goodforgod"
-        property "sonar.projectKey", "GoodforGod_micronaut-clickhouse"
-    }
-}
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 micronaut {
-    version("3.0.0")
+    version("3.4.2")
     processing {
         incremental(true)
         module(project.name)
         group(project.group)
-        annotations("io.micronaut.configuration.clickhouse.*")
     }
 }
 
@@ -49,8 +31,8 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-inject-java"
 
-    api "ru.yandex.clickhouse:clickhouse-jdbc:0.3.1-patch"
-    api "com.github.housepower:clickhouse-native-jdbc:2.5.6"
+    api "ru.yandex.clickhouse:clickhouse-jdbc:0.3.2-patch8"
+    api "com.github.housepower:clickhouse-native-jdbc:2.6.5"
 
     implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-management"
@@ -58,11 +40,11 @@ dependencies {
 
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.2.11"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 
-    testImplementation "org.testcontainers:junit-jupiter:1.16.0"
-    testImplementation "org.testcontainers:clickhouse:1.16.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.16.3"
+    testImplementation "org.testcontainers:clickhouse:1.16.3"
 
     testImplementation "io.micronaut.test:micronaut-test-core"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
@@ -81,20 +63,21 @@ test {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-    options.incremental = true
-    options.fork = true
+spotless {
+    java {
+        encoding("UTF-8")
+        importOrder()
+        removeUnusedImports()
+        eclipse("4.21.0").configFile("${rootDir}/config/codestyle.xml")
+    }
 }
 
-tasks.withType(Test) {
-    reports.html.enabled = false
-    reports.junitXml.enabled = false
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "goodforgod"
+        property "sonar.projectKey", "GoodforGod_$artifactId"
+    }
 }
 
 publishing {
@@ -104,12 +87,12 @@ publishing {
 
             pom {
                 name = "Micronaut ClickHouse Configuration"
-                url = "https://github.com/GoodforGod/micronaut-clickhouse"
-                description = "This is integration between Micronaut and ClickHouse."
+                url = "https://github.com/GoodforGod/$artifactId"
+                description = "Integration between Micronaut and ClickHouse."
 
                 license {
                     name = "Apache License 2.0"
-                    url = "https://github.com/GoodforGod/micronaut-clickhouse/blob/master/LICENSE"
+                    url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
                     distribution = "repo"
                 }
 
@@ -121,9 +104,9 @@ publishing {
                 }
 
                 scm {
-                    connection = "scm:git:git://github.com/GoodforGod/micronaut-clickhouse.git"
-                    developerConnection = "scm:git:ssh://GoodforGod/micronaut-clickhouse.git"
-                    url = "https://github.com/GoodforGod/micronaut-clickhouse/tree/master"
+                    connection = "scm:git:git://github.com/GoodforGod/${artifactId}.git"
+                    developerConnection = "scm:git:ssh://GoodforGod/${artifactId}.git"
+                    url = "https://github.com/GoodforGod/$artifactId/tree/master"
                 }
             }
         }
@@ -142,18 +125,22 @@ publishing {
     }
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding("UTF-8")
+    options.incremental(true)
+    options.fork = true
+}
+
 check.dependsOn jacocoTestReport
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.destination file("${buildDir}/jacocoHtml")
-    }
-}
-
-if (project.hasProperty("signing.keyId")) {
-    apply plugin: "signing"
-    signing {
-        sign publishing.publications.mavenJava
+        xml.enabled(true)
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
 }
 
@@ -161,5 +148,12 @@ javadoc {
     options.encoding = "UTF-8"
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
+    }
+}
+
+if (project.hasProperty("signing.keyId")) {
+    apply plugin: "signing"
+    signing {
+        sign publishing.publications.mavenJava
     }
 }
