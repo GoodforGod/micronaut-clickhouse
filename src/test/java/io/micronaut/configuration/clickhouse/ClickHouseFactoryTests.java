@@ -1,14 +1,13 @@
 package io.micronaut.configuration.clickhouse;
 
 import io.micronaut.context.ApplicationContext;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.yandex.clickhouse.ClickHouseConnection;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Anton Kurako (GoodforGod)

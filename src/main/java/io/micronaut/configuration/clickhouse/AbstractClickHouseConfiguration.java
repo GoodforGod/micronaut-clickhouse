@@ -1,6 +1,6 @@
 package io.micronaut.configuration.clickhouse;
 
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser;
+import static ru.yandex.clickhouse.ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +9,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static ru.yandex.clickhouse.ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX;
 
 /**
  * Abstract ClickHouse configuration class.
@@ -41,7 +39,7 @@ public abstract class AbstractClickHouseConfiguration {
     }
 
     protected String getJdbcUrl(String host, int port, String database, Properties properties) {
-        return ClickhouseJdbcUrlParser.JDBC_CLICKHOUSE_PREFIX + "//" + host + ":" + port + "/" + database
+        return JDBC_CLICKHOUSE_PREFIX + "//" + host + ":" + port + "/" + database
                 + getJdbcProperties(properties);
     }
 
@@ -51,7 +49,9 @@ public abstract class AbstractClickHouseConfiguration {
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String key = String.valueOf(entry.getKey());
             final String value = String.valueOf(entry.getValue());
-            final String delimiter = (isFirst) ? "?" : "&";
+            final String delimiter = (isFirst)
+                    ? "?"
+                    : "&";
             if (key.isBlank() || value.isBlank()
                     || key.contains("/") || value.contains("/")
                     || key.contains("-") || value.contains("-"))

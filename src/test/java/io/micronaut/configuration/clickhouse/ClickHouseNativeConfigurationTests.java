@@ -1,13 +1,12 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.settings.SettingKey;
+import com.github.housepower.settings.SettingKey;
 import io.micronaut.context.ApplicationContext;
-import org.junit.jupiter.api.Test;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.junit.jupiter.api.Test;
+import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * @author Anton Kurako (GoodforGod)

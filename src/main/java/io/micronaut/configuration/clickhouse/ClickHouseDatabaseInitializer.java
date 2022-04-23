@@ -3,17 +3,15 @@ package io.micronaut.configuration.clickhouse;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.runtime.exceptions.ApplicationStartupException;
+import jakarta.inject.Inject;
+import java.time.Duration;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickHouseDriver;
 import ru.yandex.clickhouse.ClickHouseStatement;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
-import javax.annotation.PostConstruct;
-import jakarta.inject.Inject;
-
-import java.time.Duration;
 
 /**
  * ClickHouse database initializer activated by

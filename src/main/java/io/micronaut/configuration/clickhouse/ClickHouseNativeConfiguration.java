@@ -1,17 +1,16 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.github.housepower.jdbc.settings.ClickHouseConfig;
-import com.github.housepower.jdbc.settings.SettingKey;
+import com.github.housepower.settings.ClickHouseConfig;
+import com.github.housepower.settings.SettingKey;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
 import jakarta.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
+import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * ClickHouse Native Driver
@@ -82,7 +81,9 @@ public class ClickHouseNativeConfiguration extends AbstractClickHouseConfigurati
             return getJdbcUrl(properties.getHost(), properties.getPort(), properties.getDatabase(), props);
         }
 
-        return isUseRawUrl() ? rawUrl : url;
+        return isUseRawUrl()
+                ? rawUrl
+                : url;
     }
 
     public void setUrl(String url) {

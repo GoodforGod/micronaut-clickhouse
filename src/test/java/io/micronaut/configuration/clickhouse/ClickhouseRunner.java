@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
 public abstract class ClickhouseRunner extends Assertions {
 
     protected static String getClickhouseVersion() {
-        return "21.3.3.14";
+        return "21.3.20.1";
     }
 
     protected ClickHouseContainer getContainer() {

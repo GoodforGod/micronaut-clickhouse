@@ -4,12 +4,11 @@ import io.micronaut.configuration.clickhouse.health.ClickHouseHealthConfiguratio
 import io.micronaut.configuration.clickhouse.health.ClickHouseHealthIndicator;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.exceptions.ConfigurationException;
-import org.junit.jupiter.api.Test;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.Test;
+import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * @author Anton Kurako (GoodforGod)

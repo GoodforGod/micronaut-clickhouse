@@ -11,9 +11,7 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 
 **Gradle**
 ```groovy
-dependencies {
-    compile 'com.github.goodforgod:micronaut-clickhouse:3.0.0'
-}
+implementation "com.github.goodforgod:micronaut-clickhouse:4.0.0"
 ```
 
 **Maven**
@@ -21,7 +19,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>3.0.0</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
