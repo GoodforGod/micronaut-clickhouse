@@ -3,8 +3,8 @@ plugins {
     id "maven-publish"
 
     id "org.sonarqube" version "3.3"
-    id "com.diffplug.spotless" version "6.1.0"
-    id "io.micronaut.library" version "3.3.2"
+    id "com.diffplug.spotless" version "6.12.0"
+    id "io.micronaut.library" version "3.7.2"
 }
 
 repositories {
@@ -19,7 +19,7 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 micronaut {
-    version("3.4.2")
+    version("3.8.8")
     processing {
         incremental(true)
         module(project.name)
@@ -31,10 +31,9 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-inject-java"
 
-    api "com.clickhouse:clickhouse-jdbc:0.3.2-patch8"
-    api "com.github.housepower:clickhouse-native-jdbc:2.6.5"
+    api "com.clickhouse:clickhouse-jdbc:0.4.2"
+    api "com.clickhouse:clickhouse-r2dbc:0.4.2"
 
-    implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-management"
     implementation "io.projectreactor:reactor-core"
 
@@ -43,8 +42,8 @@ dependencies {
     testRuntimeOnly "ch.qos.logback:logback-classic:1.2.11"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 
-    testImplementation "org.testcontainers:junit-jupiter:1.16.3"
-    testImplementation "org.testcontainers:clickhouse:1.16.3"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
+    testImplementation "org.testcontainers:clickhouse:1.17.6"
 
     testImplementation "io.micronaut.test:micronaut-test-core"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
