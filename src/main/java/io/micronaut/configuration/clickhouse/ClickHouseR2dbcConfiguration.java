@@ -1,16 +1,11 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.clickhouse.jdbc.ClickHouseDriver;
 import com.clickhouse.r2dbc.connection.ClickHouseConnectionFactory;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 
-import java.util.Collections;
-import java.util.Map;
-
 /**
- * ClickHouse Official Driver configuration class.
+ * ClickHouse Official R2DBC Driver configuration
  *
  * @author Anton Kurako (GoodforGod)
  * @since 13.04.2023

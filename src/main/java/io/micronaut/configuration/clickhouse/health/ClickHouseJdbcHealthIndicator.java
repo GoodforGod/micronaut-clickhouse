@@ -1,5 +1,8 @@
 package io.micronaut.configuration.clickhouse.health;
 
+import static io.micronaut.health.HealthStatus.DOWN;
+import static io.micronaut.health.HealthStatus.UP;
+
 import com.clickhouse.jdbc.ClickHouseConnection;
 import com.clickhouse.jdbc.ClickHouseDataSource;
 import io.micronaut.configuration.clickhouse.ClickHouseJdbcDataSourceFactory;
@@ -10,17 +13,13 @@ import io.micronaut.management.health.indicator.HealthResult;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Map;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Map;
-
-import static io.micronaut.health.HealthStatus.DOWN;
-import static io.micronaut.health.HealthStatus.UP;
 
 /**
  * A {@link HealthIndicator} for ClickHouse.
@@ -31,7 +30,7 @@ import static io.micronaut.health.HealthStatus.UP;
 @Requires(property = "endpoints.health.clickhouse.enabled", value = "true", defaultValue = "true")
 @Requires(property = "endpoints.health.clickhouse.jdbc.enabled", value = "true", defaultValue = "true")
 @Requires(classes = ClickHouseDataSource.class)
-@Requires(beans= ClickHouseJdbcDataSourceFactory.class)
+@Requires(beans = ClickHouseJdbcDataSourceFactory.class)
 @Singleton
 public class ClickHouseJdbcHealthIndicator implements HealthIndicator {
 
@@ -50,15 +49,15 @@ public class ClickHouseJdbcHealthIndicator implements HealthIndicator {
     @Override
     public Publisher<HealthResult> getResult() {
         return Mono.<String>create(sink -> {
-                    try (ClickHouseConnection connection = clickHouseDataSource.getConnection()) {
-                        try (PreparedStatement statement = connection.prepareStatement("SELECT 1")) {
-                            statement.execute();
-                            sink.success(connection.getCurrentDatabase());
-                        }
-                    } catch (SQLException e) {
-                        sink.error(e);
-                    }
-                })
+            try (ClickHouseConnection connection = clickHouseDataSource.getConnection()) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT 1")) {
+                    statement.execute();
+                    sink.success(connection.getCurrentDatabase());
+                }
+            } catch (SQLException e) {
+                sink.error(e);
+            }
+        })
                 .map(this::buildUpReport)
                 .timeout(healthConfiguration.getJdbc().getTimeout())
                 .retry(healthConfiguration.getJdbc().getRetry())

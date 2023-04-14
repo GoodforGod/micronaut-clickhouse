@@ -1,16 +1,16 @@
 package io.micronaut.configuration.clickhouse;
 
+import com.clickhouse.client.config.ClickHouseDefaults;
 import com.clickhouse.jdbc.ClickHouseDriver;
+import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
-
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
 /**
- * ClickHouse Official Driver configuration class.
+ * ClickHouse Official JDBC Driver configuration
  *
  * @see com.clickhouse.client.config.ClickHouseClientOption
  * @author Anton Kurako (GoodforGod)
@@ -22,9 +22,17 @@ import java.util.Properties;
 public class ClickHouseJdbcConfiguration {
 
     private String url;
+    private boolean useOptions = true;
+    private boolean useCustomOptions = true;
 
-    @Property(name = "properties")
-    private Map<String, Object> properties;
+    @ConfigurationBuilder("options")
+    private final ClickHouseJdbcOptions options = new ClickHouseJdbcOptions();
+
+    /**
+     * @see ClickHouseDefaults
+     */
+    @Property(name = "customOptions")
+    private Map<String, Object> customOptions;
 
     public String getUrl() {
         return url;
@@ -34,18 +42,49 @@ public class ClickHouseJdbcConfiguration {
         this.url = url;
     }
 
+    public boolean isUseOptions() {
+        return useOptions;
+    }
+
+    public void setUseOptions(boolean useOptions) {
+        this.useOptions = useOptions;
+    }
+
+    public boolean isUseCustomOptions() {
+        return useCustomOptions;
+    }
+
+    public void setUseCustomOptions(boolean useCustomOptions) {
+        this.useCustomOptions = useCustomOptions;
+    }
+
+    public ClickHouseJdbcOptions getOptions() {
+        return options;
+    }
+
     public Properties getProperties() {
-        if(properties == null) {
-            return new Properties();
-        } else {
-            final Properties props = new Properties();
-            props.putAll(properties);
-            return props;
+        final Properties props = new Properties();
+        if (isUseCustomOptions() && customOptions != null) {
+            props.putAll(customOptions);
         }
+
+        if (isUseOptions()) {
+            props.putAll(options.getAsMap());
+        }
+
+        return props;
+    }
+
+    public Map<String, Object> getCustomOptions() {
+        return customOptions;
+    }
+
+    public void setCustomOptions(Map<String, Object> customOptions) {
+        this.customOptions = customOptions;
     }
 
     @Override
     public String toString() {
-        return "[url=" + url + ", properties=" + properties + ']';
+        return "[url=" + url + ", properties=" + customOptions + ']';
     }
 }

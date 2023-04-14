@@ -1,5 +1,8 @@
 package io.micronaut.configuration.clickhouse.health;
 
+import static io.micronaut.health.HealthStatus.DOWN;
+import static io.micronaut.health.HealthStatus.UP;
+
 import com.clickhouse.r2dbc.connection.ClickHouseConnectionFactory;
 import io.micronaut.configuration.clickhouse.ClickHouseR2dbcConnectionFactory;
 import io.micronaut.context.annotation.Requires;
@@ -16,9 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
-import static io.micronaut.health.HealthStatus.DOWN;
-import static io.micronaut.health.HealthStatus.UP;
-
 /**
  * A {@link HealthIndicator} for ClickHouse.
  *
@@ -27,8 +27,8 @@ import static io.micronaut.health.HealthStatus.UP;
  */
 @Requires(property = "endpoints.health.clickhouse.enabled", value = "true", defaultValue = "true")
 @Requires(property = "endpoints.health.clickhouse.r2dbc.enabled", value = "true", defaultValue = "true")
-@Requires(classes= ClickHouseConnectionFactory.class)
-@Requires(beans= ClickHouseR2dbcConnectionFactory.class)
+@Requires(classes = ClickHouseConnectionFactory.class)
+@Requires(beans = ClickHouseR2dbcConnectionFactory.class)
 @Singleton
 public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
 
@@ -38,8 +38,8 @@ public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
     private final ClickHouseHealthConfiguration healthConfiguration;
 
     @Inject
-    public ClickHouseR2dbcHealthIndicator( ConnectionFactory connectionFactory,
-                                           ClickHouseHealthConfiguration healthConfiguration) {
+    public ClickHouseR2dbcHealthIndicator(ConnectionFactory connectionFactory,
+                                          ClickHouseHealthConfiguration healthConfiguration) {
         this.connectionFactory = connectionFactory;
         this.healthConfiguration = healthConfiguration;
     }
@@ -47,10 +47,10 @@ public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
     @Override
     public Publisher<HealthResult> getResult() {
         return Mono.usingWhen(Mono.fromDirect(connectionFactory.create()),
-                        connection -> Mono.fromDirect(connection.createStatement("SELECT 1").execute())
-                                .flatMapMany(result -> result.map(this::buildUpReport))
-                                .next(),
-                        Connection::close, (o, throwable) -> o.close(), Connection::close)
+                connection -> Mono.fromDirect(connection.createStatement("SELECT 1").execute())
+                        .flatMapMany(result -> result.map(this::buildUpReport))
+                        .next(),
+                Connection::close, (o, throwable) -> o.close(), Connection::close)
                 .timeout(healthConfiguration.getR2dbc().getTimeout())
                 .retry(healthConfiguration.getR2dbc().getRetry())
                 .onErrorResume(e -> Mono.just(buildDownReport(e)));

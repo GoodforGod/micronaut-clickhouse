@@ -1,19 +1,16 @@
 package io.micronaut.configuration.clickhouse;
 
-import com.clickhouse.jdbc.ClickHouseDataSource;
 import com.clickhouse.r2dbc.connection.ClickHouseConnectionFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.ConnectionFactoryOptions;
-import io.r2dbc.spi.Option;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 /**
- * Default factory for creating Official ClickHouse client
+ * ClickHouse Official R2DBC Driver factory
  *
  * @author Anton Kurako (GoodforGod)
  * @since 13.04.2023

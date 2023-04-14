@@ -1,9 +1,7 @@
 package io.micronaut.configuration.clickhouse.health;
 
-import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import java.time.Duration;
 
