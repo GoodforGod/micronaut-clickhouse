@@ -31,8 +31,8 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-inject-java"
 
-    api "com.clickhouse:clickhouse-jdbc:0.4.2"
-    api "com.clickhouse:clickhouse-r2dbc:0.4.2"
+    api "com.clickhouse:clickhouse-jdbc:0.4.4"
+    api "com.clickhouse:clickhouse-r2dbc:0.4.4"
 
     implementation "io.micronaut:micronaut-management"
     implementation "io.projectreactor:reactor-core"
