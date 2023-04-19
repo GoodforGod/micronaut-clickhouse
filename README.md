@@ -1,17 +1,18 @@
 # Micronaut ClickHouse Configuration
 
+[![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
 ![Java CI](https://github.com/GoodforGod/micronaut-clickhouse/workflows/Java%20CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 
-This project includes integration between Micronaut and ClickHouse, autocompletion for configuration, official & native driver support, health check and more.
+This project includes integration between Micronaut and ClickHouse, autocompletion for configuration, health check.
 
 ## Dependency :rocket:
 
 **Gradle**
 ```groovy
-implementation "com.github.goodforgod:micronaut-clickhouse:4.0.0"
+implementation "com.github.goodforgod:micronaut-clickhouse:5.0.0"
 ```
 
 **Maven**
@@ -19,256 +20,78 @@ implementation "com.github.goodforgod:micronaut-clickhouse:4.0.0"
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
 </dependency>
 ```
 
-## Configuration
+## JDBC
 
-Includes a configuration to automatically configure official [ClickHouse Java drive](https://github.com/ClickHouse/clickhouse-jdbc)
-or [ClickHouse Native Driver](https://github.com/housepower/ClickHouse-Native-JDBC). 
-Just configure the host, port, credentials or url in *application.yml*.
-
-```yaml
-clickhouse:
-  host: 127.0.0.1       # default - 127.0.0.1
-  port: 8529            # default - 8529
-  database: default     # default - default
-  native:
-    port: 9000          # default - 9000
-```
-
-## Official Driver
-
-### Connections
-
-Connections are injected as [**Prototypes**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
-
+Official JDBC driver provides *DataSource*:
 ```java
 @Inject
-private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
-                                        // both are equally correct injections
+private ClickHouseDataSource clickHouseDataSource;
+
 @Named("clickhouse")
 @Inject
-private ru.yandex.clickhouse.ClickHouseConnection officialConnection;
+private DataSource dataSource;
 ```
 
-Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
-
-```java
-@Named("clickhouse")
-@Inject
-private java.sql.Connection officialConnection;
-```
-
-In case you want to inject **[Singleton](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
-connections, you can specify @Named *prototype* and connection prototype bean will be injected.
-
-```java
-@Named("clickhouse-singleton")
-@Inject
-private java.sql.Connection officialConnection;
-```
-
-### Balanced DataSource
-
-javax.sql.DataSource with balanced are injected as [**Singleton**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
-
-```java
-@Inject
-private ru.yandex.clickhouse.BalancedClickhouseDataSource officialDataSource;
-```
-
-Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
-
-```java
-@Named("clickhouse")
-@Inject
-private java.sql.DataSource officialDataSource;
-```
-
-### Configuring ClickHouse Official Driver
-
-All configs are provided via **full autocompletion**.
+### Configuration
 
 Official Configuration supports all available ClickHouse driver settings.
 
-Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhouse-jdbc/blob/master/src/main/java/ru/yandex/clickhouse/settings/ClickHouseProperties.java)
+Check [ClickHouse Official settings file](https://github.com/ClickHouse/clickhouse-java/blob/main/clickhouse-client/src/main/java/com/clickhouse/client/config/ClickHouseDefaults.java)
 for info about all parameters.
 ```yaml
 clickhouse:
-  url: jdbc:clickhouse://localhost:8529/default?compress=1
-  host: 127.0.0.1       # default - 127.0.0.1
-  port: 8529            # default - 8529
-  database: default     # default - default
-  async: true                           # default - false
-  ssl: true                             # default - false
-  maxRedirects: 5
-  ...
-```
-
-You can specify connection only with URL and combine additional properties with URL:
-```yaml
-clickhouse:
-  url: jdbc:clickhouse://localhost:8529/default?compress=1
-  ssl: true                             # default - false
-  maxRedirects: 5
-  ...
-```
-
-Final connection URL in this case will be:
-```text
-jdbc:clickhouse://localhost:8529/default?compress=1&maxRedirects=5&ssl=true
-```
-
-You can also specify to use only URL as provided:
-```yaml
-clickhouse:
-  url: jdbc:clickhouse://localhost:8529,localhost:8530/default?compress=1
-  use-raw-url: true
-  ssl: true                             # default - false
-  maxRedirects: 5
-  ...
-```
-
-Final connection URL in this case will be (additional properties out side of URL will be ignored):
-```text
-jdbc:clickhouse://localhost:8529,localhost:8530/default?compress=1
-```
-
-## Native Driver
-
-### Connections
-
-Connections are injected as [**Prototypes**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
-
-```java
-@Inject
-private com.github.housepower.jdbc.ClickHouseConnection nativeConnection;
-```
-
-Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
-
-```java
-@Named("clickhouse-native")
-@Inject
-private java.sql.Connection nativeConnection;
-```
-
-In case you want to inject **[Singleton](https://docs.micronaut.io/latest/guide/index.html#builtInScopes)**
-connections, you can specify @Named *prototype* and connection prototype bean will be injected.
-
-```java
-@Named("clickhouse-native-singleton")
-@Inject
-private java.sql.Connection nativeConnection;
-```
-
-### Balanced DataSource
-
-javax.sql.DataSource with balanced are injected as [**Singleton**](https://docs.micronaut.io/latest/guide/index.html#builtInScopes) beans remember that while using them.
-
-```java
-@Inject
-private com.github.housepower.jdbc.BalancedClickhouseDataSource nativeDataSource;
-```
-
-Or via Java standard SQL interfaces (you may have to annotate connection named if you have other SQL connection beans around):
-
-```java
-@Named("clickhouse-native")
-@Inject
-private java.sql.DataSource nativeDataSource;
-```
-
-### Configuring ClickHouse Native Driver
-
-All configs are provided via **full autocompletion**.
-
-Settings for native driver are available under *clickhouse.native* prefix as per example below.
-
-**Remember** that native driver uses **port different from official** driver, which is default to *9000* and not *8529*.
-So your ClickHouse instance should be exposed with that port for native driver.
-
-Check [ClickHouse Native settings file](https://github.com/housepower/ClickHouse-Native-JDBC/blob/master/src/main/java/com/github/housepower/jdbc/settings/SettingKey.java) 
-for info about all parameters.
-```yaml
-clickhouse:
-  native:
-    address: 127.0.0.1         # default - 127.0.0.1 (or equal to official driver config)
-    port: 9000                 # default - 9000
-    database: default          # default - default   (or equal to official driver config)
-  ...
-```
-
-You can specify connection only with URL and combine additional properties with URL:
-```yaml
-clickhouse:
-  native:
-    url: jdbc:clickhouse://localhost:9000/default?compress=1
-    ssl: true                             # default - false
-    maxRedirects: 5
-    ...
-```
-
-Final connection URL in this case will be:
-```text
-jdbc:clickhouse://localhost:9000/default?compress=1&maxRedirects=5&ssl=true
-```
-
-You can also specify to use only URL as provided:
-```yaml
-clickhouse:
-  native:
+  jdbc:
     url: jdbc:clickhouse://localhost:8529/default?compress=1
-    use-raw-url: true
-    ssl: true                             # default - false
-    maxRedirects: 5
-    ...
+    use-options: true             # default - true
+    options:
+      user: default
+      password: default
+    use-custom-options: true      # default - true
+    custom-options:
+      my-option: 1
 ```
 
-Final connection URL in this case will be (additional properties out side of URL will be ignored):
-```text
-jdbc:clickhouse://localhost:8529/default?compress=1
+## R2DBC
+
+Official R2DBC driver provides *ConnectionFactory*:
+```java
+@Named("clickhouse")
+@Inject
+private ConnectionFactory connectionFactory;
 ```
 
+### Configuration
 
-## Database Initialization
-
-There is an option to initialize database if it doesn't exist on startup via *createDatabaseIfNotExist* option.
-
+R2DBC configuration example:
 ```yaml
 clickhouse:
-  create-database-if-not-exist: true    # default - false
-```
-
-Default timeout for operation set to 10 seconds, if you want to specify timeout *in seconds* for database creation
-on startup you can set it via property.
-
-```yaml
-clickhouse:
-  create-database-timeout: 10000ms # default - 10000ms
+  r2dbc:
+    url: r2dbc:clickhouse:http://localhost:8529/default?compress=1
 ```
 
 ## Health Check
 
-Health check for ClickHouse is provided and is *turned on* by default.
+Health check for ClickHouse is provided for *JDBC* & *R2DBC* and is *turned on* by default.
 
 Micronaut health check is part of [Micronaut Health Endpoint](https://docs.micronaut.io/latest/guide/index.html#healthEndpoint).
 
 Example of ClickHouse health:
-
 ```json
 {
   "name": "service",
   "status": "UP",
   "details": {
-    "clickhouse": {
+    "clickhouse-jdbc": {
       "name": "clickhouse",
-      "status": "UP",
-      "details": {
-        "database": "default"
-      }
+      "status": "UP"
+    },
+    "clickhouse-r2dbc": {
+      "name": "clickhouse",
+      "status": "UP"
     }
   }
 }
@@ -279,11 +102,18 @@ Where *database* name service is connected same as [configuration says](#Configu
 You can explicitly *turn off* health check or configure it.
 
 ```yaml
-clickhouse:
+endpoints:
   health:
-    enabled: false            # default - true 
-    timeout: 10000ms          # default - 10000ms
-    retry: 2                  # default - 2
+   clickhouse:
+     enabled: true               # default - true 
+     jdbc:
+       enabled: true             # default - true 
+       timeout: 10000ms          # default - 10000ms
+       retry: 2                  # default - 2
+     r2dbc:
+       enabled: true             # default - true 
+       timeout: 10000ms          # default - 10000ms
+       retry: 2                  # default - 2
 ```
 
 ## Testing

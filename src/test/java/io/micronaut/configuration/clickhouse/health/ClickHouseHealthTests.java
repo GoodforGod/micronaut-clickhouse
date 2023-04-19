@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Flux;
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers
 class ClickHouseHealthTests extends ClickhouseRunner {
 
@@ -24,47 +26,59 @@ class ClickHouseHealthTests extends ClickhouseRunner {
     private final ClickHouseContainer container = getContainer();
 
     @Test
-    void checkHealthUp() {
+    void checkJdbcHealthUp() {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.HTTP_PORT));
+        properties.put("clickhouse.jdbc.url", container.getJdbcUrl());
 
         final ApplicationContext context = ApplicationContext.run(properties);
-        final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
+        final ClickHouseJdbcHealthIndicator indicator = context.getBean(ClickHouseJdbcHealthIndicator.class);
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.UP, result.getStatus());
-        assertEquals("clickhouse", result.getName());
-        assertNotNull(result.getDetails());
+        assertEquals("clickhouse-jdbc", result.getName());
     }
 
     @Test
-    void checkHealthDownBadRequest() {
+    void checkJdbcHealthDown() {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", container.getMappedPort(ClickHouseContainer.NATIVE_PORT));
-        properties.put("clickhouse.async", true);
+        properties.put("clickhouse.jdbc.url", String.format("jdbc:clickhouse://%s:%s/%s",
+                container.getHost(), 12345, "default"));
 
         final ApplicationContext context = ApplicationContext.run(properties);
-        final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
+        final ClickHouseJdbcHealthIndicator indicator = context.getBean(ClickHouseJdbcHealthIndicator.class);
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
-        assertEquals("clickhouse", result.getName());
-        assertTrue(result.getDetails() instanceof Map);
-        assertNotNull(((Map<?, ?>) result.getDetails()).get("error"));
-        assertNotNull(result.getDetails());
+        assertEquals("clickhouse-jdbc", result.getName());
     }
 
     @Test
-    void checkHealthDown() {
+    void checkR2dbcHealthUp() {
         final Map<String, Object> properties = new HashMap<>();
-        properties.put("clickhouse.port", 9091);
-        properties.put("clickhouse.async", true);
+        properties.put("clickhouse.r2dbc.url", String.format("r2dbc:clickhouse:http://%s:%s@%s:%s/%s",
+                container.getUsername(), container.getPassword(), container.getHost(),
+                container.getMappedPort(ClickHouseContainer.HTTP_PORT), "default"));
 
         final ApplicationContext context = ApplicationContext.run(properties);
-        final ClickHouseHealthIndicator indicator = context.getBean(ClickHouseHealthIndicator.class);
+        final ClickHouseR2dbcHealthIndicator indicator = context.getBean(ClickHouseR2dbcHealthIndicator.class);
+
+        final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
+        assertEquals(HealthStatus.UP, result.getStatus());
+        assertEquals("clickhouse-r2dbc", result.getName());
+    }
+
+    @Test
+    void checkR2dbcHealthDown() {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("clickhouse.r2dbc.url", String.format("r2dbc:clickhouse:http://%s:%s@%s:%s/%s",
+                container.getUsername(), container.getPassword(), container.getHost(),
+                12345, "default"));
+
+        final ApplicationContext context = ApplicationContext.run(properties);
+        final ClickHouseR2dbcHealthIndicator indicator = context.getBean(ClickHouseR2dbcHealthIndicator.class);
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
-        assertEquals("clickhouse", result.getName());
+        assertEquals("clickhouse-r2dbc", result.getName());
     }
 }
