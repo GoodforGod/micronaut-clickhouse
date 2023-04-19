@@ -4,6 +4,7 @@ import com.clickhouse.client.ClickHouseProtocol;
 import com.clickhouse.client.config.ClickHouseDefaults;
 import com.clickhouse.config.ClickHouseBufferingMode;
 import com.clickhouse.data.ClickHouseFormat;
+import io.micronaut.core.annotation.Generated;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @author Anton Kurako (GoodforGod)
  * @since 15.04.2023
  */
+@Generated // to exclude from JaCoCo
 public class ClickHouseJdbcOptions {
 
     private String host = (String) ClickHouseDefaults.HOST.getDefaultValue();
@@ -215,7 +217,7 @@ public class ClickHouseJdbcOptions {
         map.put(ClickHouseDefaults.MAX_SCHEDULER_THREADS.getKey(), format);
         map.put(ClickHouseDefaults.MAX_REQUESTS.getKey(), maxRequests);
         map.put(ClickHouseDefaults.ROUNDING_MODE.getKey(), roundingMode.name());
-        map.put(ClickHouseDefaults.THREAD_KEEPALIVE_TIMEOUT.getKey(), threadKeepalive);
+        map.put(ClickHouseDefaults.THREAD_KEEPALIVE_TIMEOUT.getKey(), threadKeepalive.toMillis());
         map.put(ClickHouseDefaults.SERVER_TIME_ZONE.getKey(), serverTimeZone);
         map.put(ClickHouseDefaults.SERVER_VERSION.getKey(), serverVersion);
         map.put(ClickHouseDefaults.SRV_RESOLVE.getKey(), srvResolve);
