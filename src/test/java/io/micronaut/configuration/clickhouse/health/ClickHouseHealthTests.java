@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Flux;
  * @author Anton Kurako (GoodforGod)
  * @since 23.3.2020
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers
 class ClickHouseHealthTests extends ClickhouseRunner {
 
@@ -33,8 +35,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.UP, result.getStatus());
-        assertEquals("clickhouse", result.getName());
-        assertNotNull(result.getDetails());
+        assertEquals("clickhouse-jdbc", result.getName());
     }
 
     @Test
@@ -48,7 +49,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
-        assertEquals("clickhouse", result.getName());
+        assertEquals("clickhouse-jdbc", result.getName());
     }
 
     @Test
@@ -63,7 +64,7 @@ class ClickHouseHealthTests extends ClickhouseRunner {
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.UP, result.getStatus());
-        assertEquals("clickhouse", result.getName());
+        assertEquals("clickhouse-r2dbc", result.getName());
     }
 
     @Test
@@ -78,6 +79,6 @@ class ClickHouseHealthTests extends ClickhouseRunner {
 
         final HealthResult result = Flux.from(indicator.getResult()).blockFirst(Duration.ofSeconds(60));
         assertEquals(HealthStatus.DOWN, result.getStatus());
-        assertEquals("clickhouse", result.getName());
+        assertEquals("clickhouse-r2dbc", result.getName());
     }
 }

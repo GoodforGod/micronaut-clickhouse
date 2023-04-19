@@ -12,11 +12,6 @@ import java.time.Duration;
 @ConfigurationProperties("endpoints.health.clickhouse")
 public class ClickHouseHealthConfiguration {
 
-    /**
-     * The name to expose details with.
-     */
-    public static final String NAME = "clickhouse";
-
     public static class Enabled {
 
         private Duration timeout = Duration.ofSeconds(10);

@@ -15,7 +15,6 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,8 @@ import reactor.core.publisher.Mono;
 @Requires(beans = ClickHouseJdbcDataSourceFactory.class)
 @Singleton
 public class ClickHouseJdbcHealthIndicator implements HealthIndicator {
+
+    private static final String NAME = "clickhouse-jdbc";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -58,23 +59,21 @@ public class ClickHouseJdbcHealthIndicator implements HealthIndicator {
                 sink.error(e);
             }
         })
-                .map(this::buildUpReport)
+                .map(r -> buildUpReport())
                 .timeout(healthConfiguration.getJdbc().getTimeout())
                 .retry(healthConfiguration.getJdbc().getRetry())
                 .onErrorResume(e -> Mono.just(buildDownReport(e)));
     }
 
-    private HealthResult buildUpReport(String database) {
-        final Map<String, String> details = Map.of("database", database);
-        logger.debug("Health '{}' reported UP with details: {}", ClickHouseHealthConfiguration.NAME, details);
+    private HealthResult buildUpReport() {
+        logger.debug("Health '{}' reported UP", NAME);
         return getBuilder()
-                .details(details)
                 .status(UP)
                 .build();
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        logger.warn("Health '{}' reported DOWN with error: {}", ClickHouseHealthConfiguration.NAME, e.getMessage());
+        logger.warn("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
@@ -82,6 +81,6 @@ public class ClickHouseJdbcHealthIndicator implements HealthIndicator {
     }
 
     private static HealthResult.Builder getBuilder() {
-        return HealthResult.builder(ClickHouseHealthConfiguration.NAME);
+        return HealthResult.builder(NAME);
     }
 }

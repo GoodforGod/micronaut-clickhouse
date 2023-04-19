@@ -5,14 +5,14 @@ import static io.micronaut.health.HealthStatus.UP;
 
 import com.clickhouse.r2dbc.connection.ClickHouseConnectionFactory;
 import io.micronaut.configuration.clickhouse.ClickHouseR2dbcConnectionFactory;
+import io.micronaut.configuration.clickhouse.ClickHouseSettings;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.Row;
-import io.r2dbc.spi.RowMetadata;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -32,13 +32,15 @@ import reactor.core.publisher.Mono;
 @Singleton
 public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
 
+    private static final String NAME = "clickhouse-r2dbc";
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ConnectionFactory connectionFactory;
     private final ClickHouseHealthConfiguration healthConfiguration;
 
     @Inject
-    public ClickHouseR2dbcHealthIndicator(ConnectionFactory connectionFactory,
+    public ClickHouseR2dbcHealthIndicator(@Named(ClickHouseSettings.QUALIFIER) ConnectionFactory connectionFactory,
                                           ClickHouseHealthConfiguration healthConfiguration) {
         this.connectionFactory = connectionFactory;
         this.healthConfiguration = healthConfiguration;
@@ -48,7 +50,7 @@ public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
     public Publisher<HealthResult> getResult() {
         return Mono.usingWhen(Mono.fromDirect(connectionFactory.create()),
                 connection -> Mono.fromDirect(connection.createStatement("SELECT 1").execute())
-                        .flatMapMany(result -> result.map(this::buildUpReport))
+                        .flatMapMany(result -> result.map((r, rm) -> buildUpReport()))
                         .next(),
                 Connection::close, (o, throwable) -> o.close(), Connection::close)
                 .timeout(healthConfiguration.getR2dbc().getTimeout())
@@ -56,15 +58,15 @@ public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
                 .onErrorResume(e -> Mono.just(buildDownReport(e)));
     }
 
-    private HealthResult buildUpReport(Row row, RowMetadata metadata) {
-        logger.debug("Health '{}' reported UP with details", ClickHouseHealthConfiguration.NAME);
+    private HealthResult buildUpReport() {
+        logger.debug("Health '{}' reported UP", NAME);
         return getBuilder()
                 .status(UP)
                 .build();
     }
 
     private HealthResult buildDownReport(Throwable e) {
-        logger.warn("Health '{}' reported DOWN with error: {}", ClickHouseHealthConfiguration.NAME, e.getMessage());
+        logger.warn("Health '{}' reported DOWN with error: {}", NAME, e.getMessage());
         return getBuilder()
                 .status(DOWN)
                 .exception(e)
@@ -72,6 +74,6 @@ public class ClickHouseR2dbcHealthIndicator implements HealthIndicator {
     }
 
     private static HealthResult.Builder getBuilder() {
-        return HealthResult.builder(ClickHouseHealthConfiguration.NAME);
+        return HealthResult.builder(NAME);
     }
 }
