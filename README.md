@@ -1,7 +1,8 @@
 # Micronaut ClickHouse Configuration
 
-[![Minimum required Java version](https://img.shields.io/badge/Java-11%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/11/)
-![Java CI](https://github.com/GoodforGod/micronaut-clickhouse/workflows/Java%20CI/badge.svg)
+[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/micronaut-clickhouse/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.goodforgod/micronaut-clickhouse)
+![Java CI](https://github.com/GoodforGod/micronaut-clickhouse/workflows/CI%20Master/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=alert_status)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_micronaut-clickhouse&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_micronaut-clickhouse)
@@ -12,7 +13,7 @@ This project includes integration between Micronaut and ClickHouse, autocompleti
 
 **Gradle**
 ```groovy
-implementation "com.github.goodforgod:micronaut-clickhouse:5.0.0"
+implementation "com.github.goodforgod:micronaut-clickhouse:6.0.0"
 ```
 
 **Maven**
@@ -20,7 +21,7 @@ implementation "com.github.goodforgod:micronaut-clickhouse:5.0.0"
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>micronaut-clickhouse</artifactId>
-    <version>5.0.0</version>
+    <version>6.0.0</version>
 </dependency>
 ```
 
@@ -125,11 +126,13 @@ check here for [TestContainers](https://www.testcontainers.org/).
 
 ## Micronaut Compatability
 
+Starting from version *6.0.0* library ships for *Micronaut 4* & Java 17 is required.
+
 Starting from version *3.0.0* library ships for *Micronaut 3*.
 
-Starting from version *2.1.0* Java 11+ is required (previous version 1.8+ compatible).
+Starting from version *2.1.0* Java 11+ is required.
 
-Starting from version *2.0.0* library ships for *Micronaut 2*.
+Starting from version *2.0.0* library ships for *Micronaut 2* & Java 1.8 is required.
 
 Last release for **Micronaut 1** is [version *1.0.2*](https://github.com/GoodforGod/micronaut-clickhouse/releases/tag/v1.0.2).
 

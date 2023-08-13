@@ -31,7 +31,7 @@ public class ClickHouseJdbcConfiguration {
     /**
      * @see ClickHouseDefaults
      */
-    @Property(name = "customOptions")
+    @Property(name = ClickHouseSettings.PREFIX + ".jdbc.customOptions")
     private Map<String, Object> customOptions;
 
     public String getUrl() {
@@ -85,6 +85,11 @@ public class ClickHouseJdbcConfiguration {
 
     @Override
     public String toString() {
-        return "[url=" + url + ", properties=" + customOptions + ']';
+        return "[url=" + url +
+                ", useOptions=" + useOptions +
+                ", useCustomOptions=" + useCustomOptions +
+                ", options=" + options +
+                ", customOptions=" + customOptions +
+                ']';
     }
 }

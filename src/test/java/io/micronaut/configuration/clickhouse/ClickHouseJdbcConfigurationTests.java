@@ -19,11 +19,12 @@ class ClickHouseJdbcConfigurationTests extends ClickhouseRunner {
         properties.put("clickhouse.jdbc.options", Map.of("user", "user1"));
         properties.put("clickhouse.jdbc.customOptions", Map.of("one", 1));
 
-        final ApplicationContext context = ApplicationContext.run(properties);
-        final ClickHouseJdbcConfiguration configuration = context.getBean(ClickHouseJdbcConfiguration.class);
+        try (final ApplicationContext context = ApplicationContext.run(properties)) {
+            final ClickHouseJdbcConfiguration configuration = context.getBean(ClickHouseJdbcConfiguration.class);
 
-        assertEquals("user1", configuration.getOptions().getUser());
-        assertNotNull(configuration.getCustomOptions());
-        assertEquals(1, configuration.getCustomOptions().get("one"));
+            assertEquals("user1", configuration.getOptions().getUser());
+            assertNotNull(configuration.getCustomOptions());
+            assertEquals(1, configuration.getCustomOptions().get("one"));
+        }
     }
 }
