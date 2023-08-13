@@ -19,19 +19,20 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class ClickHouseJdbcTests extends ClickhouseRunner {
 
     @Container
-    private final ClickHouseContainer container = getContainer();
+    private static final ClickHouseContainer container = getContainer();
 
     @Test
     void statementExecuted() throws Exception {
         final Map<String, Object> properties = new HashMap<>();
         properties.put("clickhouse.jdbc.url", container.getJdbcUrl());
 
-        final ApplicationContext context = ApplicationContext.run(properties);
-        final ClickHouseDataSource dataSource = context.getBean(ClickHouseDataSource.class);
+        try (final ApplicationContext context = ApplicationContext.run(properties)) {
+            final ClickHouseDataSource dataSource = context.getBean(ClickHouseDataSource.class);
 
-        try (var connection = dataSource.getConnection()) {
-            try (var statement = connection.createStatement()) {
-                assertTrue(statement.execute(container.getTestQueryString()));
+            try (var connection = dataSource.getConnection()) {
+                try (var statement = connection.createStatement()) {
+                    assertTrue(statement.execute(container.getTestQueryString()));
+                }
             }
         }
     }
